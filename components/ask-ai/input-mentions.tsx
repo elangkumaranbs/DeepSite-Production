@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, RefObject } from "react";
 import { useClickAway } from "react-use";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -7,12 +7,14 @@ import { File } from "@/lib/type";
 import { Braces, FileCode, FileText } from "lucide-react";
 
 export function InputMentions({
+  ref,
   prompt,
   files,
   setPrompt,
   redesignMdUrl,
   onSubmit,
 }: {
+  ref: RefObject<HTMLDivElement | null>;
   prompt: string;
   files?: File[] | null;
   redesignMdUrl?: string;
@@ -22,7 +24,6 @@ export function InputMentions({
   const queryClient = useQueryClient();
   const [showMentionDropdown, setShowMentionDropdown] = useState(false);
   const [, setMentionSearch] = useState("");
-  const contentEditableRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [results, setResults] = useState<File[]>([]);
 
@@ -51,10 +52,10 @@ export function InputMentions({
   };
 
   const extractPromptWithIds = (): string => {
-    if (!contentEditableRef.current) return "";
+    if (!ref.current) return "";
 
     let text = "";
-    const childNodes = contentEditableRef.current.childNodes;
+    const childNodes = ref.current.childNodes;
 
     for (let i = 0; i < childNodes.length; i++) {
       const node = childNodes[i];
@@ -77,7 +78,7 @@ export function InputMentions({
     textBeforeCursor: string;
   } => {
     const selection = window.getSelection();
-    if (!selection || !contentEditableRef.current) {
+    if (!selection || !ref.current) {
       return { detect: false, textBeforeCursor: "" };
     }
 
@@ -113,10 +114,10 @@ export function InputMentions({
   };
 
   const handleInput = async () => {
-    if (!contentEditableRef.current) return;
-    const text = getTextContent(contentEditableRef.current);
+    if (!ref.current) return;
+    const text = getTextContent(ref.current);
     if (text.trim() === "") {
-      contentEditableRef.current.innerHTML = "";
+      ref.current.innerHTML = "";
     }
     setPrompt(text);
 
@@ -150,7 +151,7 @@ export function InputMentions({
   };
 
   const insertMention = (mentionId: string) => {
-    if (!contentEditableRef.current) return;
+    if (!ref.current) return;
 
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
@@ -201,7 +202,7 @@ export function InputMentions({
       selection.removeAllRanges();
       selection.addRange(newRange);
 
-      const newText = getTextContent(contentEditableRef.current);
+      const newText = getTextContent(ref.current);
       setPrompt(newText);
       setShowMentionDropdown(false);
       setMentionSearch("");
@@ -217,8 +218,8 @@ export function InputMentions({
       setPrompt(promptWithIds);
       onSubmit();
 
-      if (contentEditableRef.current) {
-        contentEditableRef.current.innerHTML = "";
+      if (ref.current) {
+        ref.current.innerHTML = "";
       }
       setPrompt("");
       setShowMentionDropdown(false);
@@ -228,12 +229,8 @@ export function InputMentions({
   };
 
   useEffect(() => {
-    if (
-      contentEditableRef.current &&
-      prompt === "" &&
-      contentEditableRef.current.innerHTML !== ""
-    ) {
-      contentEditableRef.current.innerHTML = "";
+    if (ref.current && prompt === "" && ref.current.innerHTML !== "") {
+      ref.current.innerHTML = "";
     }
   }, [prompt]);
 
@@ -247,12 +244,12 @@ export function InputMentions({
     <div className="relative">
       <div
         id="prompt-input"
-        ref={contentEditableRef}
+        ref={ref}
         contentEditable
         className="pb-2 min-h-10 max-h-[130px] overflow-y-auto w-full h-full resize-none outline-none text-primary text-sm bg-transparent empty:before:block empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground empty:before:pointer-events-none"
         data-placeholder={
           redesignMdUrl
-            ? `Ask me anything about ${redesignMdUrl}...`
+            ? `I'll redesign ${redesignMdUrl}, want to add something?`
             : files && files.length > 0
             ? "Ask me anything. Type @ to mention a file..."
             : "Ask me anything..."

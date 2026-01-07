@@ -74,12 +74,12 @@ export function AppEditor({
   return (
     <SandpackProvider
       template="static"
-      // options={{
-      //   initMode: "immediate",
-      //   autoReload: false,
-      //   recompileDelay: 3000,
-      //   recompileMode: "immediate",
-      // }}
+      options={{
+        initMode: "immediate",
+        autoReload: false,
+        recompileDelay: 3000,
+        recompileMode: "immediate",
+      }}
       files={sandpackFiles}
       // id={projectName}
       // key={projectName}

@@ -1,14 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // todo: active this before deployment in production.
-  // basePath: '/deepsite',
-  // assetPrefix: '/deepsite',
+  // basePath: "/deepsite",
+  // assetPrefix: "/deepsite",
   // async redirects() {
   //   return [
   //     {
-  //       source: '/',
-  //       destination: '/deepsite',
+  //       source: "/",
+  //       destination: "/deepsite",
   //       permanent: true,
   //       basePath: false,
   //     },

@@ -52,12 +52,13 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnNew = nextUrl.pathname.startsWith("/new");
-      
+
       const pathSegments = nextUrl.pathname.split("/").filter(Boolean);
-      const isOnProjectPage = pathSegments.length >= 2 && 
-                              !nextUrl.pathname.startsWith("/new") &&
-                              !nextUrl.pathname.startsWith("/api");
-      
+      const isOnProjectPage =
+        pathSegments.length >= 2 &&
+        !nextUrl.pathname.startsWith("/new") &&
+        !nextUrl.pathname.startsWith("/api");
+
       if (isOnProjectPage || isOnNew) {
         if (isLoggedIn) return true;
         return false;
@@ -73,4 +74,3 @@ export const authConfig = {
 } satisfies NextAuthConfig;
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
-

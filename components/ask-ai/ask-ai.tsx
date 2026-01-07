@@ -1,6 +1,6 @@
 "use client";
 import { ArrowUp, Paintbrush, X } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { HiStop } from "react-icons/hi2";
 import { useLocalStorage, useMount } from "react-use";
 import { useRouter } from "next/navigation";
@@ -14,8 +14,6 @@ import { MODELS } from "@/lib/providers";
 import { Redesign } from "./redesign";
 import { Uploader } from "./uploader";
 import { InputMentions } from "./input-mentions";
-
-// todo: send redesignMd to callAi + add it to the prompt
 
 export function AskAI({
   initialPrompt,
@@ -34,6 +32,7 @@ export function AskAI({
   isHistoryView?: boolean;
   projectName?: string;
 }) {
+  const contentEditableRef = useRef<HTMLDivElement | null>(null);
   const [prompt, setPrompt] = useState(initialPrompt ?? "");
   const [model = MODELS[0].value, setModel] = useLocalStorage<string>(
     "model",
@@ -81,6 +80,9 @@ export function AskAI({
 
   const onSubmit = () => {
     if (isHistoryView) return;
+    if (contentEditableRef.current) {
+      contentEditableRef.current.innerHTML = "";
+    }
     callAi({ prompt, model, onComplete, provider, redesignMd });
   };
 
@@ -92,6 +94,7 @@ export function AskAI({
       )}
     >
       <InputMentions
+        ref={contentEditableRef}
         files={files}
         prompt={prompt}
         setPrompt={setPrompt}
@@ -145,7 +148,11 @@ export function AskAI({
             <Button
               size="icon-sm"
               className="rounded-full!"
-              disabled={!prompt.trim() || isLoading || isHistoryView}
+              disabled={
+                isHistoryView ||
+                isLoading ||
+                (prompt.trim() === "" && !redesignMd)
+              }
               onClick={onSubmit}
             >
               <ArrowUp />

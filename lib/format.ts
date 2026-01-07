@@ -9,6 +9,8 @@ import {
 } from "./prompts";
 import { File } from "./type";
 
+// todo: the Editing stuffs in message doesnt show when it"s a SEARCH and REPLACE operation, I mean it shows it but only at the end of the message, not during the generation. fix that.
+
 /**
  * Validates that a filename has an extension.
  * Returns the filename if valid, null otherwise.

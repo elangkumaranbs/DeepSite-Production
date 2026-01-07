@@ -13,12 +13,12 @@ import { AppEditorMonacoEditor } from "./monaco-editor";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Loading from "../loading";
-import { useManualUpdates } from "../projects/useManualUpdates";
 import { ProjectWithCommits } from "@/actions/projects";
+
+// todo: while no them setted but in dark mode, the dark theme is not setted correctly.
 
 export function AppEditorCode() {
   const queryClient = useQueryClient();
-  const { isManuallyUpdatedSameAsFiles } = useManualUpdates();
   const { repoId } = useParams<{ repoId: string }>();
 
   const [isFileExplorerCollapsed, setIsFileExplorerCollapsed] = useState(true);
@@ -175,12 +175,11 @@ export function AppEditorCode() {
               </p>
             </div>
             <div className="flex items-center justify-end gap-2">
-              {!isSavingChangesSuccess ||
-                (!isSavingChanges && (
-                  <Button size="xs" variant="secondary" onClick={undoChanges}>
-                    Undo
-                  </Button>
-                ))}
+              {!isSavingChangesSuccess && !isSavingChanges && (
+                <Button size="xs" variant="secondary" onClick={undoChanges}>
+                  Undo
+                </Button>
+              )}
 
               {isSavingChangesSuccess || isSavingChangesError ? (
                 <Button

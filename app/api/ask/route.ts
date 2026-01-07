@@ -78,19 +78,10 @@ export async function POST(request: Request) {
               : []),
             {
               role: "user",
-              content: `
-${prompt}
-${
-  mentions?.length > 0
-    ? `\n\nHere are the informations about the model or dataset that the user has mentioned to use: ${mentions
-        .map(
-          (mention: any) =>
-            `Library: ${mention.library_name}\nPipeline: ${mention.pipeline_tag}\nModel: ${mention.model_id}\nReadme for more information: \n${mention.readme}`
-        )
-        .join("\n")}`
-    : ""
-}
-            `,
+              content: `${
+                redesignMd?.url &&
+                `Redesign the following website ${redesignMd.url}, try to use the same images and content, but you can still improve it if needed. Do the best version possibile. Here is the markdown:\n ${redesignMd.md} \n\n`
+              }${prompt}`,
             },
           ],
           stream: true,
