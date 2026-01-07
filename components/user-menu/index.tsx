@@ -42,7 +42,7 @@ export function UserMenu() {
       signIn("huggingface", { callbackUrl: "/" });
       return;
     }
-    const targetUrl = "https://enzostvs-gradio-build.hf.space";
+    const targetUrl = "https://enzostvs-deepsite-v4-demo.hf.space";
 
     let isOnTargetPage = false;
     if (typeof window !== "undefined") {
