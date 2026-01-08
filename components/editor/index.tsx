@@ -128,6 +128,7 @@ export function AppEditor({
                   projectName={projectName}
                   initialPrompt={initialPrompt}
                   files={files}
+                  medias={project?.medias ?? []}
                   onToggleMobileTab={setMobileTab}
                 />
               </div>

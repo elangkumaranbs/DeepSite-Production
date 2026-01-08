@@ -6,7 +6,7 @@ export const SEARCH_START = "=== SEARCH";
 export const DIVIDER = "=======";
 export const REPLACE_END = "=== REPLACE";
 
-// todo: rework follow up prompt, take a look at what I did on the v3 version, was working better.
+// following prompt doesnt work well. what it does sometimes it to use the START_FILE_CONTENT and END_FILE_CONTENT markers with comments which says "keep original part here", which is not correct, it should use SEARCH/REPLACE format instead.
 
 export const PROMPT_FOR_IMAGE_GENERATION = `
 === IMAGE PLACEHOLDER ===

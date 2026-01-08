@@ -14,9 +14,21 @@ import { Commit, File } from "@/lib/type";
 
 export interface ProjectWithCommits extends SpaceEntry {
   commits?: Commit[];
+  medias?: string[];
 }
 
 const IGNORED_PATHS = ["README.md", ".gitignore", ".gitattributes"];
+const IGNORED_FORMATS = [
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".svg",
+  ".webp",
+  ".mp4",
+  ".mp3",
+  ".wav",
+];
 
 export const getProjects = async () => {
   const projects: SpaceEntry[] = [];
@@ -61,18 +73,53 @@ export const getProject = async (id: string, commitId?: string) => {
       name: id,
     };
     const files: File[] = [];
+    const medias: string[] = [];
     const params = { repo, accessToken: token };
     if (commitId) {
       Object.assign(params, { revision: commitId });
     }
     for await (const fileInfo of listFiles(params)) {
       if (IGNORED_PATHS.includes(fileInfo.path)) continue;
-      if (
-        fileInfo.path.endsWith(".html") ||
-        fileInfo.path.endsWith(".css") ||
-        fileInfo.path.endsWith(".js") ||
-        fileInfo.path.endsWith(".json")
-      ) {
+      if (IGNORED_FORMATS.some((format) => fileInfo.path.endsWith(format))) {
+        medias.push(
+          `https://huggingface.co/spaces/${id}/resolve/main/${fileInfo.path}`
+        );
+        continue;
+      }
+
+      if (fileInfo.type === "directory") {
+        for await (const subFile of listFiles({
+          repo,
+          accessToken: token,
+          path: fileInfo.path,
+        })) {
+          if (IGNORED_FORMATS.some((format) => subFile.path.endsWith(format))) {
+            medias.push(
+              `https://huggingface.co/spaces/${id}/resolve/main/${subFile.path}`
+            );
+          }
+          const blob = await downloadFile({
+            repo,
+            accessToken: token,
+            path: subFile.path,
+            raw: true,
+            ...(commitId ? { revision: commitId } : {}),
+          }).catch((_) => {
+            return null;
+          });
+          if (!blob) {
+            continue;
+          }
+          const html = await blob?.text();
+          if (!html) {
+            continue;
+          }
+          files[subFile.path === "index.html" ? "unshift" : "push"]({
+            path: subFile.path,
+            content: html,
+          });
+        }
+      } else {
         const blob = await downloadFile({
           repo,
           accessToken: token,
@@ -94,46 +141,17 @@ export const getProject = async (id: string, commitId?: string) => {
           content: html,
         });
       }
-      if (fileInfo.type === "directory") {
-        for await (const subFile of listFiles({
-          repo,
-          accessToken: token,
-          path: fileInfo.path,
-        })) {
-          if (
-            subFile.path.endsWith(".html") ||
-            subFile.path.endsWith(".css") ||
-            subFile.path.endsWith(".js") ||
-            subFile.path.endsWith(".json")
-          ) {
-            const blob = await downloadFile({
-              repo,
-              accessToken: token,
-              path: subFile.path,
-              raw: true,
-              ...(commitId ? { revision: commitId } : {}),
-            }).catch((_) => {
-              return null;
-            });
-            if (!blob) {
-              continue;
-            }
-            const html = await blob?.text();
-            if (!html) {
-              continue;
-            }
-            files[subFile.path === "index.html" ? "unshift" : "push"]({
-              path: subFile.path,
-              content: html,
-            });
-          }
-        }
-      }
     }
     const commits: Commit[] = [];
     const commitIterator = listCommits({ repo, accessToken: token });
     for await (const commit of commitIterator) {
-      if (commit.title?.toLowerCase() === "initial commit") continue;
+      if (
+        commit.title?.toLowerCase() === "initial commit" ||
+        commit.title
+          ?.toLowerCase()
+          ?.includes("upload media files through deepsite")
+      )
+        continue;
       commits.push({
         title: commit.title,
         oid: commit.oid,
@@ -145,6 +163,7 @@ export const getProject = async (id: string, commitId?: string) => {
     }
 
     project.commits = commits;
+    project.medias = medias;
 
     return { project, files };
   } catch (error) {

@@ -20,9 +20,9 @@ export async function POST(request: Request) {
     previousMessages = [],
     files = [],
     provider: initialProvider,
-    mentions = [],
     model,
     redesignMd,
+    medias,
   } = body;
   const provider = initialProvider ?? "auto";
 
@@ -81,7 +81,13 @@ export async function POST(request: Request) {
               content: `${
                 redesignMd?.url &&
                 `Redesign the following website ${redesignMd.url}, try to use the same images and content, but you can still improve it if needed. Do the best version possibile. Here is the markdown:\n ${redesignMd.md} \n\n`
-              }${prompt}`,
+              }${prompt} ${
+                medias && medias.length > 0
+                  ? `\nHere is the list of my media files: ${medias.join(
+                      ", "
+                    )}\n`
+                  : ""
+              }`,
             },
           ],
           stream: true,

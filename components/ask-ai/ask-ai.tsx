@@ -20,6 +20,7 @@ export function AskAI({
   className,
   onToggleMobileTab,
   files,
+  medias,
   isNew = false,
   isHistoryView,
   projectName = "new",
@@ -27,6 +28,7 @@ export function AskAI({
   initialPrompt?: string;
   className?: string;
   files?: File[] | null;
+  medias?: string[] | null;
   onToggleMobileTab?: (tab: MobileTabType) => void;
   isNew?: boolean;
   isHistoryView?: boolean;
@@ -46,6 +48,7 @@ export function AskAI({
     md: string;
     url: string;
   } | null>(null);
+  const [selectedMedias, setSelectedMedias] = useState<string[]>([]);
 
   const router = useRouter();
   const { callAi, isLoading, stopGeneration, audio } =
@@ -83,7 +86,14 @@ export function AskAI({
     if (contentEditableRef.current) {
       contentEditableRef.current.innerHTML = "";
     }
-    callAi({ prompt, model, onComplete, provider, redesignMd });
+    callAi({
+      prompt,
+      model,
+      onComplete,
+      provider,
+      redesignMd,
+      medias: selectedMedias ?? [],
+    });
   };
 
   return (
@@ -103,7 +113,11 @@ export function AskAI({
       />
       <footer className="flex items-center justify-between mt-0">
         <div className="flex items-center gap-1.5">
-          <Uploader />
+          <Uploader
+            medias={medias}
+            selected={selectedMedias}
+            setSelected={setSelectedMedias}
+          />
           <Models
             model={model}
             setModel={setModel}

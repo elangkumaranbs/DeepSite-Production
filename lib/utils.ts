@@ -57,7 +57,8 @@ export const getContextFilesFromPrompt = async (
 ) => {
   const mentions = prompt.match(/file:\/[a-zA-Z0-9-_.\/]+/g);
   const filesToUseAsContext: File[] = [];
-  if (currentFiles.length === 0) return filesToUseAsContext;
+  if (currentFiles.length === 0) return currentFiles;
+  if (!mentions || mentions.length === 0) return currentFiles;
   mentions?.forEach((mention) => {
     const filePath = mention.replace("file:/", "");
     const matchedFile = currentFiles.find((file) => file.path === filePath);
@@ -140,4 +141,19 @@ export const humanizeNumber = (num: number): string => {
     return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K+";
   }
   return num.toString();
+};
+
+export const getFileType = (url: string) => {
+  if (typeof url !== "string") {
+    return "unknown";
+  }
+  const extension = url.split(".").pop()?.toLowerCase();
+  if (["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(extension || "")) {
+    return "image";
+  } else if (["mp4", "webm", "ogg", "avi", "mov"].includes(extension || "")) {
+    return "video";
+  } else if (["mp3", "wav", "ogg", "aac", "m4a"].includes(extension || "")) {
+    return "audio";
+  }
+  return "unknown";
 };

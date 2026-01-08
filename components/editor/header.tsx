@@ -96,11 +96,15 @@ export function AppEditorHeader({
             <>
               {!isHistoryView && (
                 <Button
-                  variant="indigo"
+                  variant="bordered"
                   size="xs"
                   onClick={handleToggleActivity}
                 >
-                  {currentActivity === "chat" ? <Code /> : <MessageCircle />}
+                  {currentActivity === "chat" ? (
+                    <Code className="size-3.5" />
+                  ) : (
+                    <MessageCircle className="size-3.5" />
+                  )}
                   {currentActivity === "chat" ? "Code" : "Chat"}
                 </Button>
               )}
@@ -112,12 +116,12 @@ export function AppEditorHeader({
               >
                 {device === "desktop" ? (
                   <>
-                    <Monitor className="size-4" />
+                    <Monitor className="size-3.5" />
                     Desktop
                   </>
                 ) : (
                   <>
-                    <Smartphone className="size-4" />
+                    <Smartphone className="size-3.5" />
                     Mobile
                   </>
                 )}
@@ -138,7 +142,7 @@ export function AppEditorHeader({
                 variant="bordered"
                 className="h-7 px-2! overflow-hidden gap-0"
               >
-                <ExternalLink className="size-4 shrink-0" />
+                <ExternalLink className="size-3.5 shrink-0" />
                 <motion.span
                   initial={false}
                   animate={{

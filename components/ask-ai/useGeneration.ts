@@ -193,6 +193,7 @@ export const useGeneration = (projectName: string) => {
     onComplete,
     provider = "auto",
     redesignMd,
+    medias,
   }: {
     prompt: string;
     model: string;
@@ -200,6 +201,7 @@ export const useGeneration = (projectName: string) => {
       url: string;
       md: string;
     } | null;
+    medias?: string[] | null;
     onComplete: () => void;
     provider?: ProviderType;
   }) => {
@@ -234,6 +236,7 @@ export const useGeneration = (projectName: string) => {
         previousMessages,
         provider,
         redesignMd,
+        medias,
       }),
       headers: {
         "Content-Type": "application/json",
