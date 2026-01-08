@@ -149,11 +149,18 @@
   @apply top-5 left-6;
 }
 
-.sp-layout .sp-file-explorer .sp-file-explorer-list .sp-explorer[data-active="true"] {
+.sp-layout
+  .sp-file-explorer
+  .sp-file-explorer-list
+  .sp-explorer[data-active="true"] {
   @apply text-indigo-500!;
 }
 
-.sp-layout .sp-stack .sp-tabs .sp-tab-container[aria-selected="true"] .sp-tab-button {
+.sp-layout
+  .sp-stack
+  .sp-tabs
+  .sp-tab-container[aria-selected="true"]
+  .sp-tab-button {
   @apply text-indigo-500!;
 }
 .sp-layout .sp-stack .sp-tabs .sp-tab-container:has(button:focus) {

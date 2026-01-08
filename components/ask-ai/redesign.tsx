@@ -69,6 +69,7 @@ export function Redesign({
         <PopoverTrigger asChild>
           <Button
             size="xs"
+            id="tour-redesign-section"
             variant={open ? "default" : "bordered"}
             className="rounded-full! px-2.5!"
           >
@@ -80,7 +81,7 @@ export function Redesign({
           align="start"
           className="rounded-2xl! p-0! bg-accent! border-border-muted! min-w-xs text-center overflow-hidden"
         >
-          <header className="bg-linear-to-b from-indigo-500/15 dark:from-indigo-500/40 to-accent p-6">
+          <header className="bg-linear-to-b from-indigo-500/25 dark:from-indigo-500/40 to-accent p-6">
             <div className="flex items-center justify-center -space-x-4 mb-3">
               <div className="size-9 rounded-full bg-pink-200 shadow-2xs flex items-center justify-center text-xl opacity-50">
                 🎨

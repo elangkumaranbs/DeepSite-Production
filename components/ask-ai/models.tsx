@@ -61,6 +61,7 @@ export function Models({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          id="tour-model-section"
           variant={open ? "default" : "bordered"}
           size="xs"
           className="flex items-center gap-1 rounded-full! px-2.5!"
@@ -72,7 +73,7 @@ export function Models({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="translate-x-6 rounded-2xl! p-0! bg-accent! border-border-muted! min-w-fit text-center overflow-hidden">
-        <header className="bg-linear-to-b from-indigo-500/15 dark:from-indigo-500/40 to-accent p-6">
+        <header className="bg-linear-to-b from-indigo-500/25 dark:from-indigo-500/40 to-accent p-6">
           <div className="flex items-center justify-center -space-x-4 mb-3">
             <div className="size-9 rounded-full bg-pink-200 shadow-2xs flex items-center justify-center text-xl opacity-50">
               💬

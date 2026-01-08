@@ -157,3 +157,4 @@ export const getFileType = (url: string) => {
   }
   return "unknown";
 };
+export const DISCORD_URL = "https://discord.gg/KpanwM3vXa";

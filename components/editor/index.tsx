@@ -5,6 +5,8 @@ import { useBeforeUnload } from "react-use";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
 import { amethyst } from "@codesandbox/sandpack-themes";
+import { NextStep } from "nextstepjs";
+import confetti from "canvas-confetti";
 
 import { AppEditorHeader } from "./header";
 import { AppViewer } from "@/components/viewer";
@@ -17,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import { AppEditorCode } from "@/components/code";
 import { ProjectWithCommits } from "@/actions/projects";
 import { HistoryView } from "./history-view";
+import { TourCustomCard } from "@/components/tour/card";
+import { steps } from "@/lib/onboarding";
 
 const SandpackProvider = dynamic(
   () =>
@@ -72,78 +76,93 @@ export function AppEditor({
   }, [files]);
 
   return (
-    <SandpackProvider
-      template="static"
-      options={{
-        initMode: "immediate",
-        autoReload: false,
-        recompileDelay: 3000,
-        recompileMode: "immediate",
+    <NextStep
+      cardComponent={TourCustomCard}
+      clickThroughOverlay={false}
+      shadowRgb="0, 0, 0"
+      shadowOpacity="0.6"
+      steps={steps}
+      onComplete={() => {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 1, x: 0.1 },
+        });
       }}
-      files={sandpackFiles}
-      // id={projectName}
-      // key={projectName}
-      theme={resolvedTheme === "dark" ? amethyst : undefined}
-      className="h-screen! w-full! flex! flex-col! justify-between! lg:overflow-hidden!"
     >
-      <AppEditorHeader
-        currentActivity={currentActivity}
-        onToggleActivity={setCurrentActivity}
-        onToggleDevice={toggleDevice}
-        device={device}
-        mobileTab={mobileTab}
-        onToggleMobileTab={setMobileTab}
-        isNew={isNew}
-        isHistoryView={isHistoryView}
-      />
-      <main className="flex-1! flex! items-center! pb-3! gap-3! px-3!">
-        <div
-          className={cn(
-            "w-1/3 flex flex-col justify-between h-full relative",
-            mobileTab !== "left-sidebar" ? "max-lg:hidden" : "max-lg:w-full!"
-          )}
-        >
-          {currentActivity === "chat" ? (
-            <div className="justify-between flex flex-col h-[calc(100vh-70px)] grow">
-              <AppEditorChat
-                isNew={isNew}
-                projectName={projectName}
-                onSelectFile={() => {
-                  setCurrentActivity("code");
-                }}
-              />
-              <div className="">
-                <div className="lg:hidden flex items-center justify-end pb-2">
-                  <Button
-                    variant="bordered"
-                    size="xs"
-                    onClick={() => setMobileTab("right-sidebar")}
-                  >
-                    Go to Preview <ArrowRight className="size-3" />
-                  </Button>
-                </div>
-                <AskAI
-                  isHistoryView={isHistoryView}
-                  isNew={isNew}
-                  projectName={projectName}
-                  initialPrompt={initialPrompt}
-                  files={files}
-                  medias={project?.medias ?? []}
-                  onToggleMobileTab={setMobileTab}
-                />
-              </div>
-            </div>
-          ) : (
-            <AppEditorCode />
-          )}
-          {isHistoryView && <HistoryView />}
-        </div>
-        <AppViewer
+      <SandpackProvider
+        template="static"
+        options={{
+          initMode: "immediate",
+          autoReload: false,
+          recompileDelay: 3000,
+          recompileMode: "immediate",
+        }}
+        files={sandpackFiles}
+        // id={projectName}
+        // key={projectName}
+        theme={resolvedTheme === "dark" ? amethyst : undefined}
+        className="h-screen! w-full! flex! flex-col! justify-between! lg:overflow-hidden!"
+      >
+        <AppEditorHeader
+          currentActivity={currentActivity}
+          onToggleActivity={setCurrentActivity}
+          onToggleDevice={toggleDevice}
+          device={device}
           mobileTab={mobileTab}
           onToggleMobileTab={setMobileTab}
-          device={device}
+          isNew={isNew}
+          isHistoryView={isHistoryView}
         />
-      </main>
-    </SandpackProvider>
+        <main className="flex-1! flex! items-center! pb-3! gap-3! px-3!">
+          <div
+            className={cn(
+              "w-1/3 flex flex-col justify-between h-full relative",
+              mobileTab !== "left-sidebar" ? "max-lg:hidden" : "max-lg:w-full!"
+            )}
+          >
+            {currentActivity === "chat" ? (
+              <div className="justify-between flex flex-col h-[calc(100vh-70px)] grow">
+                <AppEditorChat
+                  isNew={isNew}
+                  projectName={projectName}
+                  onSelectFile={() => {
+                    setCurrentActivity("code");
+                  }}
+                />
+                <div className="">
+                  <div className="lg:hidden flex items-center justify-end pb-2">
+                    <Button
+                      variant="bordered"
+                      size="xs"
+                      onClick={() => setMobileTab("right-sidebar")}
+                    >
+                      Go to Preview <ArrowRight className="size-3" />
+                    </Button>
+                  </div>
+                  <AskAI
+                    isHistoryView={isHistoryView}
+                    isNew={isNew}
+                    projectName={projectName}
+                    initialPrompt={initialPrompt}
+                    files={files}
+                    medias={project?.medias ?? []}
+                    onToggleMobileTab={setMobileTab}
+                  />
+                </div>
+              </div>
+            ) : (
+              <AppEditorCode />
+            )}
+            {isHistoryView && <HistoryView />}
+          </div>
+          <AppViewer
+            mobileTab={mobileTab}
+            onToggleMobileTab={setMobileTab}
+            device={device}
+          />
+        </main>
+      </SandpackProvider>
+    </NextStep>
   );
 }

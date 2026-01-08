@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { HiStop } from "react-icons/hi2";
 import { useLocalStorage, useMount } from "react-use";
 import { useRouter } from "next/navigation";
+import { useNextStep } from "nextstepjs";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -58,6 +59,7 @@ export function AskAI({
   const router = useRouter();
   const { callAi, isLoading, stopGeneration, audio } =
     useGeneration(projectName);
+  const { startNextStep } = useNextStep();
 
   // const messages =
   //   queryClient.getQueryData<Message[]>(MESSAGES_QUERY_KEY(projectName)) ?? [];
@@ -105,6 +107,7 @@ export function AskAI({
 
   return (
     <div
+      id="tour-ask-ai-section"
       className={cn(
         "dark:bg-[#222222] bg-accent border border-border-muted rounded-xl p-2.5 block relative",
         className
@@ -131,6 +134,7 @@ export function AskAI({
               variant={tourHasBeenShown ? "bordered" : "indigo"}
               size="icon-xs"
               className="rounded-full!"
+              onClick={() => startNextStep("onboarding")}
             >
               <FaHand className="size-3" />
             </Button>
