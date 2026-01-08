@@ -3,7 +3,7 @@ import { ArrowUp, Paintbrush, X } from "lucide-react";
 import { FaHand } from "react-icons/fa6";
 import { useRef, useState } from "react";
 import { HiStop } from "react-icons/hi2";
-import { useLocalStorage, useMount } from "react-use";
+import { useLocalStorage, useMount, useUpdateEffect } from "react-use";
 import { useRouter } from "next/navigation";
 import { useNextStep } from "nextstepjs";
 
@@ -23,6 +23,7 @@ export function AskAI({
   onToggleMobileTab,
   files,
   medias,
+  tourHasBeenShown,
   isNew = false,
   isHistoryView,
   projectName = "new",
@@ -31,43 +32,34 @@ export function AskAI({
   className?: string;
   files?: File[] | null;
   medias?: string[] | null;
+  tourHasBeenShown?: boolean;
   onToggleMobileTab?: (tab: MobileTabType) => void;
   isNew?: boolean;
   isHistoryView?: boolean;
   projectName?: string;
 }) {
   const contentEditableRef = useRef<HTMLDivElement | null>(null);
-  const [prompt, setPrompt] = useState(initialPrompt ?? "");
   const [model = MODELS[0].value, setModel] = useLocalStorage<string>(
     "model",
     MODELS[0].value
-  );
-  const [tourHasBeenShown, setTourHasBeenShown] = useLocalStorage<boolean>(
-    "tour-has-been-shown",
-    false
   );
   const [provider, setProvider] = useLocalStorage<ProviderType>(
     "provider",
     "auto" as ProviderType
   );
+
+  const [prompt, setPrompt] = useState(initialPrompt ?? "");
   const [redesignMd, setRedesignMd] = useState<{
     md: string;
     url: string;
   } | null>(null);
   const [selectedMedias, setSelectedMedias] = useState<string[]>([]);
+  const [startTour, setStartTour] = useState<boolean>(false);
 
   const router = useRouter();
   const { callAi, isLoading, stopGeneration, audio } =
     useGeneration(projectName);
   const { startNextStep } = useNextStep();
-
-  // const messages =
-  //   queryClient.getQueryData<Message[]>(MESSAGES_QUERY_KEY(projectName)) ?? [];
-
-  // const clearMessages = () => {
-  //   queryClient.setQueryData<Message[]>(MESSAGES_QUERY_KEY(projectName), []);
-  //   localStorage.removeItem(`messages-${projectName}`);
-  // };
 
   const onComplete = () => {
     onToggleMobileTab?.("right-sidebar");
@@ -123,21 +115,30 @@ export function AskAI({
       />
       <footer className="flex items-center justify-between mt-0">
         <div className="flex items-center gap-1.5">
-          {!isNew ? (
+          {!isNew && (
             <Uploader
               medias={medias}
               selected={selectedMedias}
               setSelected={setSelectedMedias}
             />
-          ) : (
-            <Button
-              variant={tourHasBeenShown ? "bordered" : "indigo"}
-              size="icon-xs"
-              className="rounded-full!"
-              onClick={() => startNextStep("onboarding")}
-            >
-              <FaHand className="size-3" />
-            </Button>
+          )}
+          {!tourHasBeenShown && (
+            <div className="relative z-1">
+              <Button
+                variant="indigo"
+                size="icon-xs"
+                className="rounded-full!"
+                onClick={() => {
+                  setStartTour(true);
+                  startNextStep("onboarding");
+                }}
+              >
+                <FaHand className="size-3" />
+              </Button>
+              {!startTour && (
+                <div className="animate-ping h-full rounded-full bg-indigo-500 w-full top-0 left-0 absolute -z-1" />
+              )}
+            </div>
           )}
           <Models
             model={model}

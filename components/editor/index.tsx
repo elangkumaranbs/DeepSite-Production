@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { useBeforeUnload } from "react-use";
+import { useBeforeUnload, useLocalStorage } from "react-use";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
 import { amethyst } from "@codesandbox/sandpack-themes";
@@ -51,6 +51,10 @@ export function AppEditor({
   const toggleDevice = () => {
     setDevice((prev) => (prev === "desktop" ? "mobile" : "desktop"));
   };
+  const [tourHasBeenShown, setTourHasBeenShown] = useLocalStorage<boolean>(
+    "tour-has-been-shown",
+    false
+  );
 
   useBeforeUnload(
     !project && (files?.length ?? 0) > 0,
@@ -83,6 +87,7 @@ export function AppEditor({
       shadowOpacity="0.6"
       steps={steps}
       onComplete={() => {
+        setTourHasBeenShown(true);
         confetti({
           particleCount: 100,
           spread: 70,
@@ -145,6 +150,7 @@ export function AppEditor({
                     isNew={isNew}
                     projectName={projectName}
                     initialPrompt={initialPrompt}
+                    tourHasBeenShown={tourHasBeenShown}
                     files={files}
                     medias={project?.medias ?? []}
                     onToggleMobileTab={setMobileTab}
