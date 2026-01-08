@@ -214,7 +214,9 @@ export const useGeneration = (projectName: string) => {
     );
     addMessage({
       role: "user",
-      content: prompt,
+      content: `${
+        redesignMd?.url ? `Redesign: ${redesignMd.url}\n` : ""
+      }${prompt}`,
       createdAt: new Date(),
     });
     addMessage({

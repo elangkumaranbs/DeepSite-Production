@@ -1,5 +1,6 @@
 "use client";
 import { ArrowUp, Paintbrush, X } from "lucide-react";
+import { FaHand } from "react-icons/fa6";
 import { useRef, useState } from "react";
 import { HiStop } from "react-icons/hi2";
 import { useLocalStorage, useMount } from "react-use";
@@ -39,6 +40,10 @@ export function AskAI({
   const [model = MODELS[0].value, setModel] = useLocalStorage<string>(
     "model",
     MODELS[0].value
+  );
+  const [tourHasBeenShown, setTourHasBeenShown] = useLocalStorage<boolean>(
+    "tour-has-been-shown",
+    false
   );
   const [provider, setProvider] = useLocalStorage<ProviderType>(
     "provider",
@@ -94,6 +99,8 @@ export function AskAI({
       redesignMd,
       medias: selectedMedias ?? [],
     });
+    if (selectedMedias.length > 0) setSelectedMedias([]);
+    if (redesignMd) setRedesignMd(null);
   };
 
   return (
@@ -113,11 +120,21 @@ export function AskAI({
       />
       <footer className="flex items-center justify-between mt-0">
         <div className="flex items-center gap-1.5">
-          <Uploader
-            medias={medias}
-            selected={selectedMedias}
-            setSelected={setSelectedMedias}
-          />
+          {!isNew ? (
+            <Uploader
+              medias={medias}
+              selected={selectedMedias}
+              setSelected={setSelectedMedias}
+            />
+          ) : (
+            <Button
+              variant={tourHasBeenShown ? "bordered" : "indigo"}
+              size="icon-xs"
+              className="rounded-full!"
+            >
+              <FaHand className="size-3" />
+            </Button>
+          )}
           <Models
             model={model}
             setModel={setModel}
