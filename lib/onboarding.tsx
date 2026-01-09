@@ -23,10 +23,10 @@ export const steps: Tour[] = [
               href={DISCORD_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="block mt-6"
+              className="block mt-0"
             >
               <Button
-                className="bg-indigo-500! w-full text-white! border-indigo-500! hover:brightness-90"
+                className="bg-indigo-500! w-full text-white! border-indigo-500! hover:brightness-90 translate-y-4"
                 size="sm"
               >
                 <FaDiscord />

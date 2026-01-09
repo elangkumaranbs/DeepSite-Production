@@ -33,6 +33,7 @@ export function BigProjectCard({
   onOpenDeleteDialog: (id: string) => void;
 }) {
   return (
+    // todo: use Link instead. But first fix the fact the preview is not re-rendered when changing path
     <a href={`/${project.name}`} className="">
       <div className="group/big-card rounded-lg overflow-hidden transition-all border-2 border-background ring-[1px] ring-border relative">
         {project.private ? (

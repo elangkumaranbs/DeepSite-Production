@@ -115,13 +115,6 @@ export function AskAI({
       />
       <footer className="flex items-center justify-between mt-0">
         <div className="flex items-center gap-1.5">
-          {!isNew && (
-            <Uploader
-              medias={medias}
-              selected={selectedMedias}
-              setSelected={setSelectedMedias}
-            />
-          )}
           {!tourHasBeenShown && (
             <div className="relative z-1">
               <Button
@@ -139,6 +132,13 @@ export function AskAI({
                 <div className="animate-ping h-full rounded-full bg-indigo-500 w-full top-0 left-0 absolute -z-1" />
               )}
             </div>
+          )}
+          {!isNew && (
+            <Uploader
+              medias={medias}
+              selected={selectedMedias}
+              setSelected={setSelectedMedias}
+            />
           )}
           <Models
             model={model}
