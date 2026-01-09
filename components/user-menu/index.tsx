@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useProjects } from "@/components/projects/useProjects";
 import { ProjectCard } from "@/components/projects/project-card";
-import { DISCORD_URL } from "@/lib/utils";
+import { cn, DISCORD_URL } from "@/lib/utils";
 import HFLogo from "@/assets/hf-logo.svg";
 import ProIcon from "@/assets/pro.svg";
 
@@ -99,15 +99,30 @@ export function UserMenu() {
           size="default"
           className="gap-2 pl-2! pr-3!"
         >
-          <Avatar className="size-6">
-            <AvatarImage
-              src={session.user.image || ""}
-              alt={session.user.name || "User"}
-            />
-            <AvatarFallback>
-              {session.user.name?.charAt(0).toUpperCase() || "U"}
-            </AvatarFallback>
-          </Avatar>
+          <div
+            className={cn(
+              "w-fit rounded-full p-px relative",
+              session.user.isPro &&
+                "bg-linear-to-r from-pink-500/80 via-green-500/80 to-amber-500/80"
+            )}
+          >
+            <Avatar className="size-6 border border-background">
+              <AvatarImage
+                src={session.user.image || ""}
+                alt={session.user.name || "User"}
+              />
+              <AvatarFallback>
+                {session.user.name?.charAt(0).toUpperCase() || "U"}
+              </AvatarFallback>
+            </Avatar>
+            {session.user.isPro && (
+              <Image
+                alt="Pro"
+                src={ProIcon}
+                className="size-2.5 absolute top-0 -left-0.5"
+              />
+            )}
+          </div>
           {session.user.name}
         </Button>
       </DropdownMenuTrigger>
