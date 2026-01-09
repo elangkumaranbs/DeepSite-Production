@@ -12,8 +12,6 @@ import {
 import { Commit } from "@/lib/type";
 import { cn, humanizeNumber } from "@/lib/utils";
 
-// todo: when there is a commit query, highlight the selected commit in the list.
-
 export const Commits = function ({ commits }: { commits?: Commit[] }) {
   const searchParams = useSearchParams();
   const commitParam = searchParams.get("commit");
@@ -58,7 +56,7 @@ export const Commits = function ({ commits }: { commits?: Commit[] }) {
   }, [open]);
 
   useUpdateEffect(() => {
-    if (selectedCommit !== commits?.[0].oid) {
+    if (selectedCommit !== commits?.[0].oid && !commitParam) {
       setSelectedCommit(commits ? commits[0]?.oid : null);
     }
   }, [commits]);
