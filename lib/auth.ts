@@ -24,28 +24,28 @@ export const authConfig = {
           id: profile.sub,
           name: profile.name || profile.preferred_username,
           username: profile.preferred_username,
-          email: profile.email,
           image: profile.picture,
+          isPro: profile.isPro || false,
         };
       },
     },
   ],
   callbacks: {
     async jwt({ token, account, user }) {
-      // Persist the OAuth access_token and user info to the token right after signin
       if (account) {
         token.accessToken = account.access_token;
       }
       if (user) {
         token.username = user.username;
+        token.isPro = user.isPro;
       }
       return token;
     },
     async session({ session, token }) {
-      // Send properties to the client, like an access_token from a provider
       session.accessToken = token.accessToken as string;
       if (session.user) {
         session.user.username = token.username as string;
+        session.user.isPro = token.isPro as boolean;
       }
       return session;
     },

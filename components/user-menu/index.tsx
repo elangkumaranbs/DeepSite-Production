@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { ArrowRight, Folder, LogOut, Moon, Plus, Sun } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Contrast,
+  Folder,
+  LogOut,
+  Plus,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import { FaDiscord } from "react-icons/fa6";
@@ -11,15 +18,20 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useProjects } from "@/components/projects/useProjects";
 import { ProjectCard } from "@/components/projects/project-card";
-import { cn, DISCORD_URL } from "@/lib/utils";
+import { DISCORD_URL } from "@/lib/utils";
 import HFLogo from "@/assets/hf-logo.svg";
+import ProIcon from "@/assets/pro.svg";
 
 export function UserMenu() {
   const { data: session, status } = useSession();
@@ -107,6 +119,21 @@ export function UserMenu() {
       <DropdownMenuContent className="w-64" align="start">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {!session?.user?.isPro && (
+          <>
+            <DropdownMenuItem>
+              <Link
+                href="https://huggingface.co/pro"
+                className="flex items-center gap-1.5 bg-linear-to-r from-pink-500 via-green-500 to-amber-500 text-transparent bg-clip-text font-semibold"
+                target="_blank"
+              >
+                <Image alt="Pro" src={ProIcon} className="size-3.5" />
+                Subscribe to Pro
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuItem>
           <Link
             href={`https://huggingface.co/${session.user.username}`}
@@ -123,6 +150,28 @@ export function UserMenu() {
             Settings
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger className="flex items-center justify-start gap-1.5">
+            <Contrast className="size-3.5" />
+            Appearance
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem onClick={() => setTheme("light")}>
+                Light
+                {theme === "light" && <Check />}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
+                Dark
+                {theme === "dark" && <Check />}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("system")}>
+                System
+                {theme === "system" && <Check />}
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
         <>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Projects</DropdownMenuLabel>
@@ -170,61 +219,27 @@ export function UserMenu() {
             </div>
           )}
         </>
-        <>
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel>Social</DropdownMenuLabel>
-          <DropdownMenuItem>
-            <Link
-              href={DISCORD_URL}
-              target="_blank"
-              className="flex items-center justify-start gap-2"
-            >
-              <FaDiscord className="size-4 text-indigo-500" />
-              Discord
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href="https://huggingface.co/enzostvs"
-              target="_blank"
-              className="flex items-center justify-start gap-2"
-            >
-              <Image src={HFLogo} alt="HF" className="size-4" />
-              Hugging Face
-            </Link>
-          </DropdownMenuItem>
-        </>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>Theme</DropdownMenuLabel>
-        <div className="flex items-center justify-between gap-2 px-2 pb-2.5">
-          <Button
-            variant="outline"
-            size="icon-xs"
-            onClick={() => setTheme("light")}
-            className={cn(
-              "flex-1",
-              theme === "light" && "border-amber-300! bg-amber-500/10!"
-            )}
+        <DropdownMenuItem>
+          <Link
+            href={DISCORD_URL}
+            target="_blank"
+            className="flex items-center justify-start gap-2"
           >
-            <Sun
-              className={cn("size-3.5", theme === "light" && "text-amber-500")}
-            />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon-xs"
-            onClick={() => setTheme("dark")}
-            className={cn(
-              "flex-1",
-              theme === "dark" && "border-indigo-500/50! bg-indigo-500/20!"
-            )}
+            <FaDiscord className="size-4" />
+            Discord
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            href="https://huggingface.co/enzostvs"
+            target="_blank"
+            className="flex items-center justify-start gap-2"
           >
-            <Moon
-              className={cn("size-3.5", theme === "dark" && "text-indigo-500")}
-            />
-          </Button>
-        </div>
-        <DropdownMenuSeparator />
+            <Image src={HFLogo} alt="HF" className="size-4 grayscale" />
+            Hugging Face
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut}>
           <LogOut className="size-4" />
           Sign out

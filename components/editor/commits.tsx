@@ -12,6 +12,8 @@ import {
 import { Commit } from "@/lib/type";
 import { cn, humanizeNumber } from "@/lib/utils";
 
+// todo: when there is a commit query, highlight the selected commit in the list.
+
 export const Commits = function ({ commits }: { commits?: Commit[] }) {
   const searchParams = useSearchParams();
   const commitParam = searchParams.get("commit");
@@ -65,14 +67,8 @@ export const Commits = function ({ commits }: { commits?: Commit[] }) {
     <Popover open={open} onOpenChange={setOpen}>
       <form>
         <PopoverTrigger asChild>
-          <Button variant={open ? "default" : "bordered"} size="xs">
+          <Button variant={open ? "default" : "ghost"} size="icon-xs">
             <HistoryIcon className="size-3.5" />
-            <span>
-              History <span className="max-lg:hidden">version</span>
-            </span>
-            <span className="py-0.5 px-1 text-[10px] flex items-center justify-center rounded font-semibold bg-accent text-primary font-mono">
-              {humanizeNumber(commits ? commits.length : 0)}
-            </span>
           </Button>
         </PopoverTrigger>
         <PopoverContent

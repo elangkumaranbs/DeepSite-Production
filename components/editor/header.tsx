@@ -22,6 +22,7 @@ import { UserMenu } from "@/components/user-menu";
 import { useProject } from "@/components/projects/useProject";
 import { cn } from "@/lib/utils";
 import { Commits } from "./commits";
+import { ProjectSettings } from "./project-settings";
 
 export function AppEditorHeader({
   currentActivity,
@@ -65,25 +66,7 @@ export function AppEditorHeader({
           mobileTab !== "left-sidebar" ? "max-lg:hidden" : "max-lg:w-full!"
         )}
       >
-        <Button variant="ghost" className="pl-2.5! pr-3! py-1.5! h-auto!">
-          <Image
-            src="/logo.svg"
-            alt="DeepSite"
-            width={100}
-            height={100}
-            className="size-8"
-          />
-          <div className="flex flex-col -space-y-1 items-start">
-            <p className="text-sm font-bold text-primary">
-              {project?.cardData?.title ?? "New DeepSite website"}{" "}
-              {project?.cardData?.emoji}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Live preview of your app
-            </p>
-          </div>
-          {/* <ChevronDown /> */}
-        </Button>
+        {project && <ProjectSettings project={project} />}
         <div className="flex items-center justify-end gap-2 max-lg:hidden">
           {(project?.commits?.length ?? 0) > 0 && (
             <Commits commits={project?.commits} />
