@@ -64,7 +64,7 @@ export function AppEditorHeader({
           mobileTab !== "left-sidebar" ? "max-lg:hidden" : "max-lg:w-full!"
         )}
       >
-        {project && <ProjectSettings project={project} />}
+        <ProjectSettings project={project} />
         <div className="flex items-center justify-end gap-2 max-lg:hidden">
           {(project?.commits?.length ?? 0) > 0 && (
             <Commits commits={project?.commits} />

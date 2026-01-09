@@ -35,12 +35,10 @@ import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/loading";
 
-// todo: be able to update the project name (means update the project card data title field) :-)
-
 export const ProjectSettings = ({
   project,
 }: {
-  project: ProjectWithCommits;
+  project?: ProjectWithCommits | null;
 }) => {
   const queryClient = useQueryClient();
   const { repoId, owner } = useParams();
@@ -138,19 +136,23 @@ export const ProjectSettings = ({
               <DropdownMenuSeparator />
             </>
           )}
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Edit className="size-3.5" />
-            Rename the project
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href={`https://huggingface.co/${owner}/${repoId}/settings`}
-              className="flex items-center gap-1.5"
-            >
-              <Settings className="size-3.5" />
-              Project settings
-            </Link>
-          </DropdownMenuItem>
+          {project && (
+            <>
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <Edit className="size-3.5" />
+                Rename the project
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link
+                  href={`https://huggingface.co/${owner}/${repoId}/settings`}
+                  className="flex items-center gap-1.5"
+                >
+                  <Settings className="size-3.5" />
+                  Project settings
+                </Link>
+              </DropdownMenuItem>
+            </>
+          )}
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="flex items-center justify-start gap-1.5">
               <RiContrastFill className="size-3.5" />
