@@ -7,11 +7,9 @@ import {
   Monitor,
   Smartphone,
   Code,
-  ChevronDown,
   MessageCircle,
   ExternalLink,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSandpackNavigation } from "@codesandbox/sandpack-react";

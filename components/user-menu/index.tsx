@@ -1,13 +1,8 @@
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
-import {
-  ArrowRight,
-  Check,
-  Contrast,
-  Folder,
-  LogOut,
-  Plus,
-} from "lucide-react";
+import { ArrowRight, Check, Folder, LogOut, Plus } from "lucide-react";
+import { RiContrastFill } from "react-icons/ri";
+
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import { FaDiscord } from "react-icons/fa6";
@@ -152,7 +147,7 @@ export function UserMenu() {
         </DropdownMenuItem>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="flex items-center justify-start gap-1.5">
-            <Contrast className="size-3.5" />
+            <RiContrastFill className="size-3.5" />
             Appearance
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>

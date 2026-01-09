@@ -1,15 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Settings, Contrast, Check } from "lucide-react";
+import { Settings, Check } from "lucide-react";
+import { RiContrastFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
 import { ChevronDown, ChevronLeft, Edit } from "lucide-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuSub,
@@ -19,9 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ProjectWithCommits } from "@/actions/projects";
-import { cn } from "@/lib/utils";
 import ProIcon from "@/assets/pro.svg";
-import { useParams } from "next/navigation";
 
 export const ProjectSettings = ({
   project,
@@ -94,7 +93,7 @@ export const ProjectSettings = ({
         </DropdownMenuItem>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="flex items-center justify-start gap-1.5">
-            <Contrast className="size-3.5" />
+            <RiContrastFill className="size-3.5" />
             Appearance
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>
