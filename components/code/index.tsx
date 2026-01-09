@@ -15,8 +15,6 @@ import { cn } from "@/lib/utils";
 import Loading from "../loading";
 import { ProjectWithCommits } from "@/actions/projects";
 
-// todo: while no theme setted but in dark mode, the dark theme is not setted correctly.
-
 export function AppEditorCode() {
   const queryClient = useQueryClient();
   const { repoId } = useParams<{ repoId: string }>();

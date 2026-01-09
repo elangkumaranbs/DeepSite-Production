@@ -21,7 +21,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ProjectWithCommits } from "@/actions/projects";
 import { toast } from "sonner";
 import Loading from "../loading";
-// todo: implement the uploader component
 
 export const Uploader = ({
   medias,

@@ -107,6 +107,17 @@ export function AppEditorMonacoEditor({
     };
   }, []);
 
+  const themeEditor = useMemo(() => {
+    const isSystemDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const effectiveTheme =
+      theme === "system" ? (isSystemDark ? "dark" : "light") : theme;
+    return effectiveTheme === "dark" ? "Night" : "NightLight";
+  }, [theme]);
+
+  console.log("++ THEME ++", theme);
+
   return (
     <SandpackStack className="h-full!">
       <FileTabs />
@@ -115,7 +126,7 @@ export function AppEditorMonacoEditor({
           width="100%"
           height="100%"
           language={language}
-          theme={theme === "dark" ? "Night" : "NightLight"}
+          theme={themeEditor}
           key={sandpack.activeFile}
           options={{
             fontSize: 14,
