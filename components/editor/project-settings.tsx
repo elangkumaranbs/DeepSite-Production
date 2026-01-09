@@ -104,7 +104,7 @@ export const ProjectSettings = ({
             <div className="flex flex-col -space-y-1 items-start">
               <p className="text-sm font-bold text-primary">
                 {project?.cardData?.title ?? "New DeepSite website"}{" "}
-                {project?.cardData?.emoji}
+                {/* {project?.cardData?.emoji} */}
               </p>
               <p className="text-xs text-muted-foreground">
                 Live preview of your app

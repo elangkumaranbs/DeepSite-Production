@@ -42,14 +42,14 @@ export function UserMenu() {
         newUrl.searchParams.delete("signin");
         window.history.replaceState({}, "", newUrl.toString());
 
-        signIn("huggingface", { callbackUrl: "/deepsite" });
+        signIn("huggingface", { callbackUrl: "/" });
       }
     }
   }, [session, status]);
 
   const handleSignIn = () => {
     if (window.location.hostname === "localhost") {
-      signIn("huggingface", { callbackUrl: "/deepsite" });
+      signIn("huggingface", { callbackUrl: "/" });
       return;
     }
     const targetUrl = "https://enzostvs-deepsite-v4-demo.hf.space";
@@ -76,7 +76,7 @@ export function UserMenu() {
     if (!isOnTargetPage) {
       window.open(`${targetUrl}?signin=true`, "_blank");
     } else {
-      signIn("huggingface", { callbackUrl: "/deepsite" });
+      signIn("huggingface", { callbackUrl: "/" });
     }
   };
 
