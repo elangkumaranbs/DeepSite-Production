@@ -97,7 +97,7 @@ export function UserProjects() {
         </div>
       </article>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] rounded-3xl!">
           <DialogHeader>
             <DialogTitle>Delete project</DialogTitle>
             <DialogDescription>
