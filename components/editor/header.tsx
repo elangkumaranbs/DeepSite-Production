@@ -82,7 +82,7 @@ export function AppEditorHeader({
               Live preview of your app
             </p>
           </div>
-          <ChevronDown />
+          {/* <ChevronDown /> */}
         </Button>
         <div className="flex items-center justify-end gap-2 max-lg:hidden">
           {(project?.commits?.length ?? 0) > 0 && (

@@ -3,6 +3,8 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { ArrowRight, Folder, LogOut, Moon, Plus, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
+import { FaDiscord } from "react-icons/fa6";
+import Image from "next/image";
 
 import {
   DropdownMenu,
@@ -16,7 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useProjects } from "@/components/projects/useProjects";
 import { ProjectCard } from "@/components/projects/project-card";
-import { cn } from "@/lib/utils";
+import { cn, DISCORD_URL } from "@/lib/utils";
+import HFLogo from "@/assets/hf-logo.svg";
 
 export function UserMenu() {
   const { data: session, status } = useSession();
@@ -125,11 +128,11 @@ export function UserMenu() {
           <DropdownMenuLabel>Projects</DropdownMenuLabel>
           {projects && projects?.length > 0 ? (
             <div className="grid grid-cols-1 gap-2 px-2 pb-2">
-              {projects?.slice(0, 3).map((project) => (
+              {projects?.slice(0, 2).map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
               <div className="w-full flex items-center justify-between">
-                {projects?.length > 0 && (
+                {projects?.length > 2 && (
                   <Link
                     href="/#projects"
                     className="text-xs text-muted-foreground hover:text-primary flex items-center justify-start gap-1"
@@ -166,6 +169,30 @@ export function UserMenu() {
               </div>
             </div>
           )}
+        </>
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel>Social</DropdownMenuLabel>
+          <DropdownMenuItem>
+            <Link
+              href={DISCORD_URL}
+              target="_blank"
+              className="flex items-center justify-start gap-2"
+            >
+              <FaDiscord className="size-4 text-indigo-500" />
+              Discord
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              href="https://huggingface.co/enzostvs"
+              target="_blank"
+              className="flex items-center justify-start gap-2"
+            >
+              <Image src={HFLogo} alt="HF" className="size-4" />
+              Hugging Face
+            </Link>
+          </DropdownMenuItem>
         </>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Theme</DropdownMenuLabel>
