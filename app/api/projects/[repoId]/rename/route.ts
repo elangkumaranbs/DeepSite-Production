@@ -52,16 +52,21 @@ export async function PUT(
       { status: 500 }
     );
   }
-  readmeFile.replace(/^title:\s*(.*)$/m, `title: ${newTitle}`);
+  const updatedReadmeFile = readmeFile.replace(
+    /^title:\s*(.*)$/m,
+    `title: ${newTitle}`
+  );
+
+  console.log(readmeFile, updatedReadmeFile);
 
   await uploadFile({
     repo,
     accessToken: token,
-    file: new File([readmeFile], "README.md", { type: "text/markdown" }),
+    file: new File([updatedReadmeFile], "README.md", { type: "text/markdown" }),
     commitTitle: `🐳 ${format(new Date(), "dd/MM")} - ${format(
       new Date(),
       "HH:mm"
-    )} - `,
+    )} - Rename project to "${newTitle}"`,
   });
 
   return NextResponse.json(
