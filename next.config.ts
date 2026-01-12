@@ -1,18 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // basePath: "/deepsite",
-  // assetPrefix: "/deepsite",
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: "/",
-  //       destination: "/deepsite",
-  //       permanent: true,
-  //       basePath: false,
-  //     },
-  //   ];
-  // },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/deepsite",
+        permanent: true,
+        basePath: false,
+      },
+    ];
+  },
+  basePath: "/deepsite",
+  assetPrefix: "/deepsite",
   experimental: {
     globalNotFound: true,
   },

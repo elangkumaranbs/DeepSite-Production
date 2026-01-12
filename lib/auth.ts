@@ -51,13 +51,13 @@ export const authConfig = {
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnNew = nextUrl.pathname.startsWith("/new");
+      const isOnNew = nextUrl.pathname.includes("/new");
 
       const pathSegments = nextUrl.pathname.split("/").filter(Boolean);
       const isOnProjectPage =
         pathSegments.length >= 2 &&
-        !nextUrl.pathname.startsWith("/new") &&
-        !nextUrl.pathname.startsWith("/api");
+        !nextUrl.pathname.includes("/new") &&
+        !nextUrl.pathname.includes("/api");
 
       if (isOnProjectPage || isOnNew) {
         if (isLoggedIn) return true;

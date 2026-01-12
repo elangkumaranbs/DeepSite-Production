@@ -56,7 +56,7 @@ export const ProjectSettings = ({
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/projects/${repoId}/rename`, {
+      const response = await fetch(`/deepsite/api/projects/${repoId}/rename`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +95,7 @@ export const ProjectSettings = ({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="pl-2.5! pr-3! py-1.5! h-auto!">
             <Image
-              src="/logo.svg"
+              src="/deepsite/deepsite/deepsite/logo.svg"
               alt="DeepSite"
               width={100}
               height={100}

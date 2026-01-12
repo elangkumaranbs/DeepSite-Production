@@ -24,7 +24,7 @@ export function BlankPage() {
     <div className="bg-card max-w-lg w-full px-10 py-6 z-1 rounded-xl shadow-accent-foreground mx-auto">
       <header className="flex flex-col items-center justify-center">
         <Image
-          src="/logo.svg"
+          src="/deepsite/logo.svg"
           alt="DeepSite"
           width={56}
           height={56}
