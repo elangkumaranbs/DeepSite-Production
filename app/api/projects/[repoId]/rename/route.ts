@@ -57,8 +57,6 @@ export async function PUT(
     `title: ${newTitle}`
   );
 
-  console.log(readmeFile, updatedReadmeFile);
-
   await uploadFile({
     repo,
     accessToken: token,

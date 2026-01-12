@@ -63,7 +63,7 @@ export const Uploader = ({
       data.append("images", file);
     });
 
-    const response = await fetch(`/deepsite/api/projects/${repoId}/medias`, {
+    const response = await fetch(`/api/projects/${repoId}/medias`, {
       method: "POST",
       body: data,
     })

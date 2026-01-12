@@ -116,8 +116,6 @@ export function AppEditorMonacoEditor({
     return effectiveTheme === "dark" ? "Night" : "NightLight";
   }, [theme]);
 
-  console.log("++ THEME ++", theme);
-
   return (
     <SandpackStack className="h-full!">
       <FileTabs />

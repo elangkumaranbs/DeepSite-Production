@@ -298,7 +298,7 @@ export const useGeneration = (projectName: string) => {
               });
             } else {
               const response = await fetch(
-                `/deepsite/api/projects/${projectName.split("/")[1]}`,
+                `/api/projects/${projectName.split("/")[1]}`,
                 {
                   method: "PUT",
                   body: JSON.stringify({
@@ -334,7 +334,6 @@ export const useGeneration = (projectName: string) => {
           if (errorMatch) {
             try {
               const errorData = JSON.parse(errorMatch[1]);
-              console.log("Parsed error data:", errorData);
               if (errorData.isError) {
                 const lastMessageId =
                   currentMessages[currentMessages.length - 1].id;

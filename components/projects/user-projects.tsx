@@ -30,7 +30,7 @@ export function UserProjects() {
 
   const handleDeleteProject = async () => {
     const response = await fetch(
-      `/deepsite/api/projects/${deleteProjectId?.split("/")[1]}`,
+      `/api/projects/${deleteProjectId?.split("/")[1]}`,
       {
         method: "DELETE",
         headers: {

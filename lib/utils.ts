@@ -15,6 +15,28 @@ export const COLORS = [
   "pink",
   "gray",
 ];
+export const EMOJIS_FOR_SPACE = [
+  "🚀",
+  "🔥",
+  "✨",
+  "💡",
+  "🤖",
+  "🌟",
+  "🎉",
+  "💎",
+  "⚡",
+  "🎨",
+  "🧠",
+  "📦",
+  "🛠️",
+  "🚧",
+  "🌈",
+  "📚",
+  "🧩",
+  "🔧",
+  "🖥️",
+  "📱",
+];
 
 export const getMentionsFromPrompt = async (prompt: string) => {
   const mentions = prompt.match(/[a-zA-Z0-9-]+\/[a-zA-Z0-9-]+/g);
@@ -89,7 +111,7 @@ export const defaultHTML = `<!DOCTYPE html>
         Ask me anything.
       </h1>
     </div>
-      <img src="https://huggingface.co/deepsite/arrow.svg" class="absolute bottom-8 left-0 w-[100px] transform rotate-[30deg] dark:invert dark:brightness-0" />
+      <img src="https://huggingface.co/deepsite/arrow.svg" class="absolute bottom-8 left-0 w-[100px] transform rotate-30 dark:invert dark:brightness-0" />
     <script></script>
   </body>
 </html>

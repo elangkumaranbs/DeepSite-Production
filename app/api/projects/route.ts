@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 import { RepoDesignation, createRepo, uploadFiles } from "@huggingface/hub";
 
 import { auth } from "@/lib/auth";
-import { COLORS, injectDeepSiteBadge, isIndexPage } from "@/lib/utils";
+import {
+  COLORS,
+  EMOJIS_FOR_SPACE,
+  injectDeepSiteBadge,
+  isIndexPage,
+} from "@/lib/utils";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -39,11 +44,14 @@ export async function POST(request: Request) {
 
   const colorFrom = COLORS[Math.floor(Math.random() * COLORS.length)];
   const colorTo = COLORS[Math.floor(Math.random() * COLORS.length)];
+  const emoji =
+    EMOJIS_FOR_SPACE[Math.floor(Math.random() * EMOJIS_FOR_SPACE.length)];
   const README = `---
 title: ${projectTitle}
 colorFrom: ${colorFrom}
 colorTo: ${colorTo}
 sdk: static
+emoji: ${emoji}
 tags:
   - deepsite-v4
 ---

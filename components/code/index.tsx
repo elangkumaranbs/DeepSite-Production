@@ -31,7 +31,7 @@ export function AppEditorCode() {
     setIsSavingChanges(true);
     const manuallyUpdatedFiles =
       queryClient.getQueryData<File[]>(["manuallyUpdatedFiles"]) ?? [];
-    const response = await fetch(`/deepsite/api/projects/${repoId}`, {
+    const response = await fetch(`/api/projects/${repoId}`, {
       method: "PUT",
       body: JSON.stringify({
         files: manuallyUpdatedFiles,

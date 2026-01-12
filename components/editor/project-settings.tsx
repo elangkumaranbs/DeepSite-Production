@@ -56,7 +56,7 @@ export const ProjectSettings = ({
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/deepsite/api/projects/${repoId}/rename`, {
+      const response = await fetch(`/api/projects/${repoId}/rename`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -94,13 +94,17 @@ export const ProjectSettings = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="pl-2.5! pr-3! py-1.5! h-auto!">
-            <Image
-              src="/deepsite/deepsite/logo.svg"
-              alt="DeepSite"
-              width={100}
-              height={100}
-              className="size-8"
-            />
+            {project?.cardData?.emoji ? (
+              <span className="text-3xl">{project?.cardData?.emoji}</span>
+            ) : (
+              <Image
+                src="/logo.svg"
+                alt="DeepSite"
+                width={100}
+                height={100}
+                className="size-8"
+              />
+            )}
             <div className="flex flex-col -space-y-1 items-start">
               <p className="text-sm font-bold text-primary">
                 {project?.cardData?.title ?? "New DeepSite website"}{" "}

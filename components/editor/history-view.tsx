@@ -13,12 +13,9 @@ export const HistoryView = function () {
       "This action will set this historical version as the default version of the project. Are you sure you want to proceed?"
     );
     if (!confirmation) return;
-    const response = await fetch(
-      `/deepsite/api/projects/${repoId}/${commitId}`,
-      {
-        method: "POST",
-      }
-    ).then(async (response) => {
+    const response = await fetch(`/api/projects/${repoId}/${commitId}`, {
+      method: "POST",
+    }).then(async (response) => {
       if (response.ok) {
         const data = await response.json();
         return data;
