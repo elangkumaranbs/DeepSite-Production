@@ -10,6 +10,7 @@ export const ALLOWED_DOMAINS = [
   "huggingface.co",
   "deepsite.hf.co",
   "localhost",
+  "enzostvs-deepsite-v4-demo.hf.space",
 ];
 
 export const COLORS = [

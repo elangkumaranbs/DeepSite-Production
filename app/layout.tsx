@@ -50,8 +50,6 @@ export const viewport: Viewport = {
   themeColor: "#4f46e5",
 };
 
-// todo add iframe detector, to dont allow people embedding the app in iframes.
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -111,6 +109,7 @@ export default async function RootLayout({
                 {isAllowedDomain ? (
                   children
                 ) : (
+                  // todo: do something fancier here.
                   <p>
                     Unfortunately you don&apos;t have access to DeepSite from
                     this domain: {hostname}.
