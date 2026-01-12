@@ -10,7 +10,7 @@ export function Navigation() {
       <div className="flex items-center justify-start gap-4">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/deepsite/logo.svg"
+            src="/logo.svg"
             alt="DeepSite"
             width={100}
             height={100}

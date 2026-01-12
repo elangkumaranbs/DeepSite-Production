@@ -23,12 +23,12 @@ export const metadata: Metadata = {
   description:
     "Build your next application with ease and speed by using AI Vibe Coding.",
   icons: {
-    icon: "/deepsite/logo.svg",
-    shortcut: "/deepsite/logo.svg",
-    apple: "/deepsite/logo.svg",
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
     other: {
       rel: "icon",
-      url: "/deepsite/logo.svg",
+      url: "/logo.svg",
     },
   },
 };

@@ -95,7 +95,7 @@ export const ProjectSettings = ({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="pl-2.5! pr-3! py-1.5! h-auto!">
             <Image
-              src="/deepsite/deepsite/deepsite/logo.svg"
+              src="/deepsite/deepsite/logo.svg"
               alt="DeepSite"
               width={100}
               height={100}

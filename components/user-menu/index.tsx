@@ -49,7 +49,9 @@ export function UserMenu() {
 
   const handleSignIn = () => {
     if (window.location.hostname === "localhost") {
-      signIn("huggingface", { callbackUrl: "/" });
+      signIn("huggingface", {
+        callbackUrl: "/",
+      });
       return;
     }
     const targetUrl = "https://enzostvs-deepsite-v4-demo.hf.space";
@@ -219,7 +221,7 @@ export function UserMenu() {
                   <span className="font-medium">No projects found.</span> <br />
                   Create a new project to get started.
                 </p>
-                <Link href="/new">
+                <Link href="/deepsite/new">
                   <Button variant="outline" size="xs" className="w-full">
                     New project
                     <Plus className="size-2.5" />

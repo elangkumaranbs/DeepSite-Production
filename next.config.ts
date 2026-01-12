@@ -11,8 +11,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  basePath: "/deepsite",
-  assetPrefix: "/deepsite",
   experimental: {
     globalNotFound: true,
   },
