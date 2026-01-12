@@ -2,7 +2,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { ChevronRight, ExternalLink } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Markdown from "react-markdown";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
@@ -11,12 +12,14 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import { useChat } from "./useChat";
-import { AiLoading } from "../ask-ai/loading";
-import Loading from "../loading";
-import { useGeneration } from "../ask-ai/useGeneration";
+import { AiLoading } from "@/components/ask-ai/loading";
+import Loading from "@/components/loading";
+import { useGeneration } from "@/components/ask-ai/useGeneration";
 import { MessageAction, MessageActionType, File } from "@/lib/type";
-import { Button } from "../ui/button";
-import { getFileIcon } from "../ask-ai/input-mentions";
+import { Button } from "@/components/ui/button";
+import { getFileIcon } from "@/components/ask-ai/input-mentions";
+import ProIcon from "@/assets/pro.svg";
+import ProModal from "../pro-modal";
 
 export function AppEditorChat({
   isNew,
@@ -33,6 +36,7 @@ export function AppEditorChat({
   const chatProjectName = isNew ? "new" : projectName ?? "new";
   const { messages } = useChat(chatProjectName);
   const { isLoading, createProject } = useGeneration(chatProjectName);
+  const [openProModal, setOpenProModal] = useState(false);
 
   const project = queryClient.getQueryData<SpaceEntry>(["project"]);
   const files = queryClient.getQueryData<File[]>(["files"]) ?? [];
@@ -49,6 +53,7 @@ export function AppEditorChat({
     if (!action) return;
     switch (action.type) {
       case MessageActionType.PUBLISH_PROJECT:
+        const files = queryClient.getQueryData<File[]>(["files"]) ?? [];
         return createProject(
           files ?? [],
           action.projectTitle ?? "",
@@ -60,6 +65,8 @@ export function AppEditorChat({
           `https://huggingface.co/spaces/${project?.name}`,
           "_blank"
         );
+      case MessageActionType.UPGRADE_TO_PRO:
+        return setOpenProModal(true);
     }
   };
 
@@ -295,6 +302,13 @@ export function AppEditorChat({
                             overlay={false}
                           />
                         )}
+                        {action.type === MessageActionType.UPGRADE_TO_PRO && (
+                          <Image
+                            src={ProIcon}
+                            alt="Pro Icon"
+                            className="size-3.5"
+                          />
+                        )}
                         {action.label}
                       </Button>
                     ))}
@@ -304,6 +318,7 @@ export function AppEditorChat({
           </div>
         ))}
       </div>
+      <ProModal open={openProModal} onClose={setOpenProModal} />
     </div>
   );
 }

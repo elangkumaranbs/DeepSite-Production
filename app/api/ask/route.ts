@@ -107,16 +107,26 @@ export async function POST(request: Request) {
 
         await writer.close();
       } catch (error) {
-        console.error(error);
         try {
           const errorMessage =
             error instanceof Error
               ? error.message
               : "An error occurred while processing your request";
-          const errorPayload = JSON.stringify({
-            messageError: errorMessage,
-            isError: true,
-          });
+          let errorPayload = "";
+          if (
+            errorMessage?.includes("exceeded your monthly included credits")
+          ) {
+            errorPayload = JSON.stringify({
+              messageError: errorMessage,
+              showProMessage: true,
+              isError: true,
+            });
+          } else {
+            errorPayload = JSON.stringify({
+              messageError: errorMessage,
+              isError: true,
+            });
+          }
           await writer.write(encoder.encode(`\n\n__ERROR__:${errorPayload}`));
           await writer.close();
         } catch (closeError) {

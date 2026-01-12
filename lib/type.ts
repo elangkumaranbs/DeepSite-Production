@@ -9,6 +9,7 @@ export type ProviderType = "auto" | "cheapest" | "fastest" | string;
 export enum MessageActionType {
   PUBLISH_PROJECT = "PUBLISH_PROJECT",
   SEE_LIVE_PREVIEW = "SEE_LIVE_PREVIEW",
+  UPGRADE_TO_PRO = "UPGRADE_TO_PRO",
 }
 export type MessageAction = {
   label: string;
@@ -20,7 +21,7 @@ export type MessageAction = {
   projectTitle?: string;
   prompt?: string;
   messageReferrer?: number;
-}
+};
 export type Message = {
   id: string;
   role: MessageRole;
@@ -35,7 +36,7 @@ export type Message = {
 };
 export type File = {
   path: string;
-  content?: string
+  content?: string;
 };
 export interface Commit {
   title: string;

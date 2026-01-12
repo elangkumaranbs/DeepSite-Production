@@ -326,11 +326,6 @@ export const useGeneration = (projectName: string) => {
           setIsLoading(false);
           return;
         }
-        // if (abortController.current?.signal.aborted) {
-        //   toast.error("Generation aborted");
-        //   setIsLoading(false);
-        //   return;
-        // }
         const chunk = decoder.decode(value, { stream: true });
         completeResponse += chunk;
 
@@ -339,13 +334,25 @@ export const useGeneration = (projectName: string) => {
           if (errorMatch) {
             try {
               const errorData = JSON.parse(errorMatch[1]);
+              console.log("Parsed error data:", errorData);
               if (errorData.isError) {
                 const lastMessageId =
                   currentMessages[currentMessages.length - 1].id;
                 updateMessage(lastMessageId, {
                   isThinking: false,
                   isAborted: true,
-                  content: `Error: ${errorData.messageError}`,
+                  content: errorData?.showProMessage
+                    ? `You have exceeded your monthly included credits with Hugging Face inference provider. Please consider upgrading to a pro plan.`
+                    : `Error: ${errorData.messageError}`,
+                  actions: errorData?.showProMessage
+                    ? [
+                        {
+                          label: "Upgrade to Pro",
+                          variant: "pro",
+                          type: MessageActionType.UPGRADE_TO_PRO,
+                        },
+                      ]
+                    : [],
                 });
                 setIsLoading(false);
                 return;
