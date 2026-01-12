@@ -3,7 +3,7 @@ import { useLocalStorage } from "react-use";
 import { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { File, Message } from "@/lib/type";
+import { Message } from "@/lib/type";
 
 const MESSAGES_QUERY_KEY = (projectName: string) =>
   ["messages", projectName] as const;
