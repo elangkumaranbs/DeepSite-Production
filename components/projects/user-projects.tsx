@@ -55,7 +55,7 @@ export function UserProjects() {
 
   return (
     <section id="projects" className="max-w-7xl px-6 mx-auto mt-10">
-      <article className="border border-border bg-card rounded-xl px-8 py-8">
+      <article className="border border-border bg-card rounded-xl p-5 lg:p-8">
         <header className="flex max-sm:flex-col items-center justify-between gap-4 border-b border-border pb-5 border-dashed">
           <div className="w-full -space-y-1">
             <p className="text-lg font-bold">

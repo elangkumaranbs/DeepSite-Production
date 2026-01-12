@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { useMount } from "react-use";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { EXAMPLES_OF_PROJECT_SUGGESTIONS } from "@/lib/prompts";
 
 interface ExampleOfProjectSuggestion {
@@ -14,7 +13,6 @@ export function BlankPage() {
   const [suggestions, setSuggestions] = useState<ExampleOfProjectSuggestion[]>(
     []
   );
-  const router = useRouter();
 
   useMount(() => {
     const randomSuggestions = [...EXAMPLES_OF_PROJECT_SUGGESTIONS]

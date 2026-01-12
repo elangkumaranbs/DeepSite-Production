@@ -22,6 +22,9 @@ import { HistoryView } from "./history-view";
 import { TourCustomCard } from "@/components/tour/card";
 import { steps } from "@/lib/onboarding";
 
+// todo: free credit limit reached modal!! + upgrade to pro
+// also do the pro limit credit reached too, maybe show a modal suggesting to add a payment method
+
 const SandpackProvider = dynamic(
   () =>
     import("@codesandbox/sandpack-react").then((mod) => mod.SandpackProvider),
@@ -104,8 +107,6 @@ export function AppEditor({
           recompileMode: "immediate",
         }}
         files={sandpackFiles}
-        // id={projectName}
-        // key={projectName}
         theme={resolvedTheme === "dark" ? amethyst : undefined}
         className="h-screen! w-full! flex! flex-col! justify-between! lg:overflow-hidden!"
       >
