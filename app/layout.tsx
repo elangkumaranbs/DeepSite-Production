@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NextStepProvider } from "nextstepjs";
+import Script from "next/script";
+import { headers } from "next/headers";
 
 import "@/app/globals.css";
 import { ThemeProvider } from "@/components/providers/theme";
@@ -8,7 +10,7 @@ import { AuthProvider } from "@/components/providers/session";
 import { Toaster } from "@/components/ui/sonner";
 import { ReactQueryProvider } from "@/components/providers/react-query";
 import { generateSEO, generateStructuredData } from "@/lib/seo";
-import Script from "next/script";
+import { ALLOWED_DOMAINS } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,21 +52,29 @@ export const viewport: Viewport = {
 
 // todo add iframe detector, to dont allow people embedding the app in iframes.
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const hostname = (
+    headersList.get("x-forwarded-host") ??
+    headersList.get("host") ??
+    ""
+  ).split(":")[0];
+
   const structuredData = generateStructuredData("WebApplication", {
     name: "DeepSite",
     description: "Build websites with AI, no code required",
     url: "https://huggingface.co/deepsite",
   });
-
   const organizationData = generateStructuredData("Organization", {
     name: "DeepSite",
     url: "https://huggingface.co/deepsite",
   });
+
+  const isAllowedDomain = ALLOWED_DOMAINS.includes(hostname);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -97,7 +107,16 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <NextStepProvider>{children}</NextStepProvider>
+              <NextStepProvider>
+                {isAllowedDomain ? (
+                  children
+                ) : (
+                  <p>
+                    Unfortunately you don&apos;t have access to DeepSite from
+                    this domain: {hostname}.
+                  </p>
+                )}
+              </NextStepProvider>
             </ThemeProvider>
           </ReactQueryProvider>
         </AuthProvider>

@@ -6,6 +6,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const ALLOWED_DOMAINS = [
+  "huggingface.co",
+  "deepsite.hf.co",
+  "localhost",
+];
+
 export const COLORS = [
   "red",
   "blue",
