@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NextStepProvider } from "nextstepjs";
 import Script from "next/script";
-import { headers } from "next/headers";
 
 import "@/app/globals.css";
 import { ThemeProvider } from "@/components/providers/theme";
@@ -10,7 +9,6 @@ import { AuthProvider } from "@/components/providers/session";
 import { Toaster } from "@/components/ui/sonner";
 import { ReactQueryProvider } from "@/components/providers/react-query";
 import { generateSEO, generateStructuredData } from "@/lib/seo";
-import { ALLOWED_DOMAINS } from "@/lib/utils";
 import { NotAuthorizedDomain } from "@/components/not-authorized";
 
 const geistSans = Geist({
@@ -56,13 +54,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = await headers();
-  const hostname = (
-    headersList.get("x-forwarded-host") ??
-    headersList.get("host") ??
-    ""
-  ).split(":")[0];
-
   const structuredData = generateStructuredData("WebApplication", {
     name: "DeepSite",
     description: "Build websites with AI, no code required",
@@ -72,8 +63,6 @@ export default async function RootLayout({
     name: "DeepSite",
     url: "https://huggingface.co/deepsite",
   });
-
-  const isAllowedDomain = ALLOWED_DOMAINS.includes(hostname);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -107,11 +96,8 @@ export default async function RootLayout({
               disableTransitionOnChange
             >
               <NextStepProvider>
-                {isAllowedDomain ? (
-                  children
-                ) : (
-                  <NotAuthorizedDomain hostname={hostname} />
-                )}
+                {children}
+                <NotAuthorizedDomain />
               </NextStepProvider>
             </ThemeProvider>
           </ReactQueryProvider>
