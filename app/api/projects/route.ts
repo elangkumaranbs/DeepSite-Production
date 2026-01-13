@@ -29,13 +29,16 @@ export async function POST(request: Request) {
   const title =
     projectTitle || projectTitle !== "" ? projectTitle : "DeepSite Project";
 
-  const formattedTitle = title
+  let formattedTitle = title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .split("-")
     .filter(Boolean)
     .join("-")
-    .slice(0, 96);
+    .slice(0, 75);
+
+  formattedTitle =
+    formattedTitle + "-" + Math.random().toString(36).substring(2, 7);
 
   const repo: RepoDesignation = {
     type: "space",
