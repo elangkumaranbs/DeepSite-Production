@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ReactQueryProvider } from "@/components/providers/react-query";
 import { generateSEO, generateStructuredData } from "@/lib/seo";
 import { ALLOWED_DOMAINS } from "@/lib/utils";
+import { NotAuthorizedDomain } from "@/components/not-authorized";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -109,11 +110,7 @@ export default async function RootLayout({
                 {isAllowedDomain ? (
                   children
                 ) : (
-                  // todo: do something fancier here.
-                  <p>
-                    Unfortunately you don&apos;t have access to DeepSite from
-                    this domain: {hostname}.
-                  </p>
+                  <NotAuthorizedDomain hostname={hostname} />
                 )}
               </NextStepProvider>
             </ThemeProvider>
