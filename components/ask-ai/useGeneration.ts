@@ -187,24 +187,27 @@ export const useGeneration = (projectName: string) => {
     }
   };
 
-  const callAi = async ({
-    prompt,
-    model,
-    onComplete,
-    provider = "auto",
-    redesignMd,
-    medias,
-  }: {
-    prompt: string;
-    model: string;
-    redesignMd?: {
-      url: string;
-      md: string;
-    } | null;
-    medias?: string[] | null;
-    onComplete: () => void;
-    provider?: ProviderType;
-  }, setModel: (model: string) => void) => {
+  const callAi = async (
+    {
+      prompt,
+      model,
+      onComplete,
+      provider = "auto",
+      redesignMd,
+      medias,
+    }: {
+      prompt: string;
+      model: string;
+      redesignMd?: {
+        url: string;
+        md: string;
+      } | null;
+      medias?: string[] | null;
+      onComplete: () => void;
+      provider?: ProviderType;
+    },
+    setModel: (model: string) => void
+  ) => {
     setIsLoading(true);
     const messages = getMessages();
     const files = getFiles();
@@ -251,6 +254,9 @@ export const useGeneration = (projectName: string) => {
     const currentMessages = getMessages();
 
     if (!request.ok) {
+      console.log("Request failed with status:", request.status);
+      console.log("Response text:", await request.text());
+      console.log("Request error message:", request.statusText);
       const lastMessageId = currentMessages[currentMessages.length - 1].id;
       updateMessage(lastMessageId, {
         isThinking: false,
@@ -361,8 +367,18 @@ export const useGeneration = (projectName: string) => {
             }
           }
         }
-        if (completeResponse.includes("_Note: The selected model was not available. Switched to")) {
-          const newModel = completeResponse.match(/The selected model was not available. Switched to (.+)/)?.[1].replace(/`/g, "").replace(" ", "").replace(/\.|_$/g, "");
+        if (
+          completeResponse.includes(
+            "_Note: The selected model was not available. Switched to"
+          )
+        ) {
+          const newModel = completeResponse
+            .match(
+              /The selected model was not available. Switched to (.+)/
+            )?.[1]
+            .replace(/`/g, "")
+            .replace(" ", "")
+            .replace(/\.|_$/g, "");
           if (newModel) {
             setModel(newModel);
             updateMessage(currentMessages[currentMessages.length - 1].id, {
