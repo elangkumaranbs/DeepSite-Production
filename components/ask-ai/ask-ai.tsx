@@ -40,11 +40,11 @@ export function AskAI({
 }) {
   const contentEditableRef = useRef<HTMLDivElement | null>(null);
   const [model = DEFAULT_MODEL, setModel] = useLocalStorage<string>(
-    "model",
+    "deepsite-model",
     DEFAULT_MODEL
   );
   const [provider, setProvider] = useLocalStorage<ProviderType>(
-    "provider",
+    "deepsite-provider",
     "auto" as ProviderType
   );
 
