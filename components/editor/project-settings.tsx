@@ -124,7 +124,7 @@ export const ProjectSettings = ({
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          {session?.user?.isPro && (
+          {!session?.user?.isPro && (
             <>
               <DropdownMenuItem>
                 <Link

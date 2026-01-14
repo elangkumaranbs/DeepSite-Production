@@ -18,6 +18,6 @@ models:
   - MiniMaxAI/MiniMax-M2.1
 ---
 
-# DeepSite 🏗️
+# DeepSite 🐳
 
 DeepSite is a Vibe Coding Platform designed to make coding smarter and more efficient. Tailored for developers, data scientists, and AI engineers, it integrates generative AI into your coding projects to enhance creativity and productivity.

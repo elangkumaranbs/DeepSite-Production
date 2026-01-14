@@ -54,8 +54,7 @@ export function UserMenu() {
       });
       return;
     }
-    // todo: before deployment, change this URL to the production one https://huggingface.co/deepsite
-    const targetUrl = "https://enzostvs-deepsite-v4-demo.hf.space";
+    const targetUrl = "https://huggingface.co/deepsite";
 
     let isOnTargetPage = false;
     if (typeof window !== "undefined") {
