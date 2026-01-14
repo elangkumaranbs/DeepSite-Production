@@ -38,7 +38,7 @@ export const HistoryView = function () {
 
   return (
     <div className="absolute inset-0 bg-background/10 rounded-2xl backdrop-blur-xs z-10 flex items-center justify-center p-4 border">
-      <div className="max-w-sm rounded-2xl overflow-hidden border border-indigo-500/20 text-center bg-linear-to-b from-accent/50 to-accent/30">
+      <div className="max-w-sm rounded-2xl overflow-hidden border border-indigo-500/20 bg-card text-center bg-linear-to-b from-accent/50 to-accent/30">
         <header className="bg-linear-to-b from-indigo-500/25 dark:from-indigo-500/40 to-accent p-6">
           <div className="flex items-center justify-center -space-x-4 mb-3">
             <div className="size-9 rounded-full bg-pink-200 shadow-2xs flex items-center justify-center text-xl opacity-50">

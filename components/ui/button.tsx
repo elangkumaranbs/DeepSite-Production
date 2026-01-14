@@ -25,6 +25,8 @@ const buttonVariants = cva(
           "border bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         indigo:
           "border border-indigo-500 bg-indigo-500 text-white hover:bg-indigo-600 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400 dark:hover:bg-indigo-500/30",
+        gradient:
+          "bg-linear-to-r from-rose-500/80 via-fushia-500/80 to-yellow-500/80 text-white hover:brightness-110 font-semibold!",
         "ghost-bordered":
           "border bg-primary-foreground hover:bg-background hover:text-accent-foreground dark:hover:bg-accent/50",
         pro: "bg-linear-to-br from-pink-500 dark:from-pink-500/50 via-green-500 dark:via-green-500/50 to-amber-500 dark:to-amber-500/50 text-white hover:brightness-120 font-semibold! [&_img]:grayscale [&_img]:brightness-1 [&_img]:invert dark:[&_img]:invert-0 dark:[&_img]:grayscale-0 dark:[&_img]:brightness-100",

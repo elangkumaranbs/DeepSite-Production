@@ -10,9 +10,9 @@ export function HeroHeader() {
         data-slot="badge"
         className="rounded-full border border-indigo-500/10 px-2 py-0.5 text-xs font-medium w-fit bg-linear-to-br from-indigo-500/10 to-purple-300/20 text-indigo-500"
       >
-        DeepSite: new release 🎉
+        DeepSite: v4 is here 🎉
       </div>
-      <h1 className="mb-3 text-balance text-4xl font-bold tracking-tight lg:text-5xl lg:text-7xl">
+      <h1 className="mb-3 text-balance text-4xl font-bold tracking-tight lg:text-7xl">
         {TITLE.map((word, index) => (
           <motion.span
             key={index}
