@@ -54,7 +54,9 @@ export async function POST(request: Request) {
       const tryGeneration = async (): Promise<void> => {
         try {
           const chatCompletion = client.chatCompletionStream({
-            model: currentModel + (currentProvider !== "auto" ? `:${currentProvider}` : ""),
+            model:
+              currentModel +
+              (currentProvider !== "auto" ? `:${currentProvider}` : ""),
             messages: [
               {
                 role: "system",
@@ -118,11 +120,18 @@ export async function POST(request: Request) {
 
           if (
             !hasRetried &&
-            errorMessage?.includes("Failed to perform inference: Model not found")
+            errorMessage?.includes(
+              "Failed to perform inference: Model not found"
+            )
           ) {
             hasRetried = true;
-
-            const fallbackModel = MODELS.find((m) => m.value !== model);
+            const availableFallbackModels = MODELS.filter(
+              (m) => m.value !== model
+            );
+            const randomIndex = Math.floor(
+              Math.random() * availableFallbackModels.length
+            );
+            const fallbackModel = availableFallbackModels[randomIndex];
             if (fallbackModel) {
               currentModel = fallbackModel.value;
               currentProvider = fallbackModel.autoProvider ?? "auto";
