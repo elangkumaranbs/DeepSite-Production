@@ -77,7 +77,6 @@ export async function POST(
       { status: 200 }
     );
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       { ok: false, error: error ?? "Failed to upload media files" },
       { status: 500 }

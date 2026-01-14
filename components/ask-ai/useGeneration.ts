@@ -254,14 +254,15 @@ export const useGeneration = (projectName: string) => {
     const currentMessages = getMessages();
 
     if (!request.ok) {
-      console.log("Request failed with status:", request.status);
-      console.log("Response text:", await request.text());
-      console.log("Request error message:", request.statusText);
+      const jsonResponse = await request.json()?.catch(() => null);
+      const errorMessage =
+        jsonResponse?.error || `Status code: ${request.status}`;
+
       const lastMessageId = currentMessages[currentMessages.length - 1].id;
       updateMessage(lastMessageId, {
         isThinking: false,
         isAborted: true,
-        content: `Error: Failed to connect to AI service`,
+        content: `Error: ${errorMessage}`,
       });
       setIsLoading(false);
       return;
