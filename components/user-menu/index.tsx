@@ -260,7 +260,11 @@ export function UserMenu() {
     </DropdownMenu>
   ) : (
     <>
-      <Button variant="outline" onClick={handleSignIn}>
+      <Button
+        variant="outline"
+        onClick={handleSignIn}
+        className="max-lg:hidden"
+      >
         Sign in
       </Button>
       <Button onClick={handleSignIn}>Get Started</Button>
