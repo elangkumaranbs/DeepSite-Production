@@ -147,7 +147,7 @@ export function AppEditorChat({
                       }
 
                       return (
-                        <code className="font-mono bg-indigo-500/10 text-indigo-500 text-[10px] px-1.5 py-0.5 rounded-md">
+                        <code className="font-mono bg-primary/10 text-primary text-[10px] px-1.5 py-0.5 rounded-md">
                           {children}
                         </code>
                       );

@@ -1,25 +1,32 @@
 "use client";
 import { ArrowUp } from "lucide-react";
 import { useState } from "react";
-import { useInterval, useLocalStorage } from "react-use";
+import { useLocalStorage, useMount } from "react-use";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { ProviderType } from "@/lib/type";
 import { Models } from "./models";
-import { MODELS } from "@/lib/providers";
+import { DEFAULT_MODEL } from "@/lib/providers";
 import { cn } from "@/lib/utils";
-import { AiLoading } from "./loading";
-import { EXAMPLES_OF_PROJECT_SUGGESTIONS } from "@/lib/prompts";
 
 export function AskAiLanding({ className }: { className?: string }) {
-  const [model, setModel] = useState<string>(MODELS[0].value);
+  const [model = DEFAULT_MODEL, setModel] = useLocalStorage<string>(
+    "deepsite-model",
+    DEFAULT_MODEL
+  );
   const [provider, setProvider] = useLocalStorage<ProviderType>(
-    "provider",
+    "deepsite-provider",
     "auto" as ProviderType
   );
   const router = useRouter();
   const [prompt, setPrompt] = useState<string>("");
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useMount(() => {
+    setMounted(true);
+  });
+
   return (
     <div
       className={cn(
@@ -42,12 +49,14 @@ export function AskAiLanding({ className }: { className?: string }) {
       />
       <footer className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Models
-            model={model}
-            setModel={setModel}
-            provider={provider as ProviderType}
-            setProvider={setProvider}
-          />
+          {mounted && (
+            <Models
+              model={model}
+              setModel={setModel}
+              provider={provider as ProviderType}
+              setProvider={setProvider}
+            />
+          )}
         </div>
         <div>
           <Button
