@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { InferenceClient } from "@huggingface/inference";
 
@@ -48,96 +47,123 @@ export async function POST(request: Request) {
       },
     });
     (async () => {
-      try {
-        const chatCompletion = client.chatCompletionStream({
-          model: model + (provider !== "auto" ? `:${provider}` : ""),
-          messages: [
-            {
-              role: "system",
-              content:
-                files.length > 0
-                  ? FOLLOW_UP_SYSTEM_PROMPT
-                  : INITIAL_SYSTEM_PROMPT,
-            },
-            ...previousMessages.map((message: Message) => ({
-              role: message.role,
-              content: message.content,
-            })),
-            ...(files?.length > 0
-              ? [
-                  {
-                    role: "user",
-                    content: `Here are the files that the user has provider:${files
-                      .map(
-                        (file: File) =>
-                          `File: ${file.path}\nContent: ${file.content}`
-                      )
-                      .join("\n")}\n\n${prompt}`,
-                  },
-                ]
-              : []),
-            {
-              role: "user",
-              content: `${
-                redesignMd?.url &&
-                `Redesign the following website ${redesignMd.url}, try to use the same images and content, but you can still improve it if needed. Do the best version possibile. Here is the markdown:\n ${redesignMd.md} \n\n`
-              }${prompt} ${
-                medias && medias.length > 0
-                  ? `\nHere is the list of my media files: ${medias.join(
-                      ", "
-                    )}\n`
-                  : ""
-              }`,
-            },
-          ],
-          stream: true,
-          max_tokens: 16_000,
-        });
-        while (true) {
-          const { done, value } = await chatCompletion.next();
-          if (done) {
-            break;
-          }
+      let hasRetried = false;
+      let currentModel = model;
+      let currentProvider = provider;
 
-          const chunk = value.choices[0]?.delta?.content;
-          if (chunk) {
-            await writer.write(encoder.encode(chunk));
-          }
-        }
-
-        await writer.close();
-      } catch (error) {
+      const tryGeneration = async (): Promise<void> => {
         try {
+          const chatCompletion = client.chatCompletionStream({
+            model: currentModel + (currentProvider !== "auto" ? `:${currentProvider}` : ""),
+            messages: [
+              {
+                role: "system",
+                content:
+                  files.length > 0
+                    ? FOLLOW_UP_SYSTEM_PROMPT
+                    : INITIAL_SYSTEM_PROMPT,
+              },
+              ...previousMessages.map((message: Message) => ({
+                role: message.role,
+                content: message.content,
+              })),
+              ...(files?.length > 0
+                ? [
+                    {
+                      role: "user",
+                      content: `Here are the files that the user has provider:${files
+                        .map(
+                          (file: File) =>
+                            `File: ${file.path}\nContent: ${file.content}`
+                        )
+                        .join("\n")}\n\n${prompt}`,
+                    },
+                  ]
+                : []),
+              {
+                role: "user",
+                content: `${
+                  redesignMd?.url &&
+                  `Redesign the following website ${redesignMd.url}, try to use the same images and content, but you can still improve it if needed. Do the best version possibile. Here is the markdown:\n ${redesignMd.md} \n\n`
+                }${prompt} ${
+                  medias && medias.length > 0
+                    ? `\nHere is the list of my media files: ${medias.join(
+                        ", "
+                      )}\n`
+                    : ""
+                }`,
+              },
+            ],
+            stream: true,
+            max_tokens: 16_000,
+          });
+          while (true) {
+            const { done, value } = await chatCompletion.next();
+            if (done) {
+              break;
+            }
+
+            const chunk = value.choices[0]?.delta?.content;
+            if (chunk) {
+              await writer.write(encoder.encode(chunk));
+            }
+          }
+
+          await writer.close();
+        } catch (error) {
           const errorMessage =
             error instanceof Error
               ? error.message
               : "An error occurred while processing your request";
-          let errorPayload = "";
+
           if (
-            errorMessage?.includes("exceeded your monthly included credits")
+            !hasRetried &&
+            errorMessage?.includes("Failed to perform inference: Model not found")
           ) {
-            errorPayload = JSON.stringify({
-              messageError: errorMessage,
-              showProMessage: true,
-              isError: true,
-            });
-          } else {
-            errorPayload = JSON.stringify({
-              messageError: errorMessage,
-              isError: true,
-            });
+            hasRetried = true;
+
+            const fallbackModel = MODELS.find((m) => m.value !== model);
+            if (fallbackModel) {
+              currentModel = fallbackModel.value;
+              currentProvider = fallbackModel.autoProvider ?? "auto";
+
+              const switchMessage = `\n\n_Note: The selected model was not available. Switched to \`${fallbackModel.value}\`._\n\n`;
+              await writer.write(encoder.encode(switchMessage));
+
+              return tryGeneration();
+            }
           }
-          await writer.write(encoder.encode(`\n\n__ERROR__:${errorPayload}`));
-          await writer.close();
-        } catch (closeError) {
-          console.error("Failed to send error message:", closeError);
+
           try {
-            await writer.abort(error);
-          } catch (abortError) {
-            console.error("Failed to abort writer:", abortError);
+            let errorPayload = "";
+            if (
+              errorMessage?.includes("exceeded your monthly included credits")
+            ) {
+              errorPayload = JSON.stringify({
+                messageError: errorMessage,
+                showProMessage: true,
+                isError: true,
+              });
+            } else {
+              errorPayload = JSON.stringify({
+                messageError: errorMessage,
+                isError: true,
+              });
+            }
+            await writer.write(encoder.encode(`\n\n__ERROR__:${errorPayload}`));
+            await writer.close();
+          } catch (closeError) {
+            console.error("Failed to send error message:", closeError);
+            try {
+              await writer.abort(error);
+            } catch (abortError) {
+              console.error("Failed to abort writer:", abortError);
+            }
           }
         }
-      }
+      };
+
+      await tryGeneration();
     })();
 
     return response;

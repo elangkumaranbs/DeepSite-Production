@@ -69,13 +69,16 @@ export function AskAI({
     if (initialPrompt && initialPrompt.trim() !== "" && isNew) {
       setTimeout(() => {
         if (isHistoryView) return;
-        callAi({
-          prompt: initialPrompt,
-          model,
-          onComplete,
-          provider,
-        });
-        router.replace("/new");
+        callAi(
+          {
+            prompt: initialPrompt,
+            model,
+            onComplete,
+            provider,
+          },
+          setModel
+        );
+        router.replace("/deepsite/new");
       }, 200);
     }
   });
@@ -85,14 +88,17 @@ export function AskAI({
     if (contentEditableRef.current) {
       contentEditableRef.current.innerHTML = "";
     }
-    callAi({
-      prompt,
-      model,
-      onComplete,
-      provider,
-      redesignMd,
-      medias: selectedMedias ?? [],
-    });
+    callAi(
+      {
+        prompt,
+        model,
+        onComplete,
+        provider,
+        redesignMd,
+        medias: selectedMedias ?? [],
+      },
+      setModel
+    );
     if (selectedMedias.length > 0) setSelectedMedias([]);
     if (redesignMd) setRedesignMd(null);
   };

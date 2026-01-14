@@ -203,7 +203,7 @@ export function UserMenu() {
                   </Link>
                 )}
                 <Link
-                  href="/new"
+                  href="/deepsite/new"
                   className="text-xs text-muted-foreground hover:text-primary flex items-center justify-start gap-1"
                 >
                   New project

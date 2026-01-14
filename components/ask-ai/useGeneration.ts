@@ -18,7 +18,7 @@ export const useGeneration = (projectName: string) => {
   const audio = useRef<HTMLAudioElement>(null);
   const queryClient = useQueryClient();
   const abortController = useRef<AbortController | null>(null);
-  const [, setStoredMessages, clearStoredMessages] = useLocalStorage<Message[]>(
+  const [, setStoredMessages] = useLocalStorage<Message[]>(
     `messages-${projectName}`,
     []
   );
@@ -204,7 +204,7 @@ export const useGeneration = (projectName: string) => {
     medias?: string[] | null;
     onComplete: () => void;
     provider?: ProviderType;
-  }) => {
+  }, setModel: (model: string) => void) => {
     setIsLoading(true);
     const messages = getMessages();
     const files = getFiles();
@@ -359,6 +359,15 @@ export const useGeneration = (projectName: string) => {
             } catch (e) {
               console.error("Failed to parse error message:", e);
             }
+          }
+        }
+        if (completeResponse.includes("_Note: The selected model was not available. Switched to")) {
+          const newModel = completeResponse.match(/The selected model was not available. Switched to (.+)/)?.[1].replace(/`/g, "").replace(" ", "").replace(/\.|_$/g, "");
+          if (newModel) {
+            setModel(newModel);
+            updateMessage(currentMessages[currentMessages.length - 1].id, {
+              model: newModel,
+            });
           }
         }
 

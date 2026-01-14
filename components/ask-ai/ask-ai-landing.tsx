@@ -36,7 +36,7 @@ export function AskAiLanding({ className }: { className?: string }) {
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            router.push(`/new?prompt=${prompt}`);
+            router.push(`/deepsite/new?prompt=${prompt}`);
           }
         }}
       />
@@ -54,7 +54,7 @@ export function AskAiLanding({ className }: { className?: string }) {
             size="icon-sm"
             className="rounded-full!"
             onClick={() => {
-              router.push(`/new?prompt=${prompt}`);
+              router.push(`/deepsite/new?prompt=${prompt}`);
             }}
           >
             <ArrowUp />

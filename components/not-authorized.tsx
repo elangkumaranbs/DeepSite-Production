@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -114,11 +114,14 @@ export const NotAuthorizedDomain = () => {
           <p className="text-lg text-muted-foreground mb-6">
             Unfortunately, you don&apos;t have access to DeepSite from this
             domain:{" "}
-            <span className="font-mono font-semibold bg-indigo-500/10 border-2 border-indigo-500/10 text-indigo-500 text-base px-2 py-1 rounded-md">
-              {window.location.hostname}
-            </span>
+            {open && (
+              <span className="font-mono font-semibold bg-indigo-500/10 border-2 border-indigo-500/10 text-indigo-500 text-base px-2 py-1 rounded-md">
+                {window?.location?.hostname ?? "unknown domain"}
+              </span>
+            )}
             .
           </p>
+
           <Link href="https://huggingface.co/deepsite" target="_blank">
             <Button size="lg" className="text-base!">
               Go to DeepSite
