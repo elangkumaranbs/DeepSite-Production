@@ -9,7 +9,6 @@ export const MODELS = [
     value: "deepseek-ai/DeepSeek-V3-0324",
     label: "DeepSeek V3 O324",
     providers: ["fireworks-ai", "nebius", "sambanova", "novita", "hyperbolic"],
-    autoProvider: "novita",
     logo: DeepSeekLogo,
     companyName: "DeepSeek",
     isBestSeller: true,
@@ -24,7 +23,6 @@ export const MODELS = [
     value: "Qwen/Qwen3-Coder-30B-A3B-Instruct",
     label: "Qwen3 Coder 30B A3B Instruct",
     providers: ["novita", "hyperbolic"],
-    autoProvider: "novita",
     logo: QwenLogo,
     companyName: "Qwen",
   },
@@ -32,7 +30,6 @@ export const MODELS = [
     value: "moonshotai/Kimi-K2-Instruct-0905",
     label: "Kimi K2 Instruct",
     providers: ["together", "novita", "groq"],
-    autoProvider: "groq",
     logo: KimiLogo,
     companyName: "Kimi",
   },
@@ -56,6 +53,8 @@ export const MODELS = [
     isBestSeller: true,
   },
 ];
+
+export const DEFAULT_MODEL = "MiniMaxAI/MiniMax-M2.1";
 
 export const getProviders = async (model: string) => {
   const response = await fetch(

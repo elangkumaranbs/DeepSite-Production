@@ -4,7 +4,7 @@ import { InferenceClient } from "@huggingface/inference";
 import { FOLLOW_UP_SYSTEM_PROMPT, INITIAL_SYSTEM_PROMPT } from "@/lib/prompts";
 import { auth } from "@/lib/auth";
 import { File, Message } from "@/lib/type";
-import { MODELS } from "@/lib/providers";
+import { DEFAULT_MODEL, MODELS } from "@/lib/providers";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -18,12 +18,11 @@ export async function POST(request: Request) {
     prompt,
     previousMessages = [],
     files = [],
-    provider: initialProvider,
+    provider,
     model,
     redesignMd,
     medias,
   } = body;
-  const provider = initialProvider ?? "auto";
 
   if (!prompt) {
     return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
@@ -49,14 +48,11 @@ export async function POST(request: Request) {
     (async () => {
       let hasRetried = false;
       let currentModel = model;
-      let currentProvider = provider;
 
       const tryGeneration = async (): Promise<void> => {
         try {
           const chatCompletion = client.chatCompletionStream({
-            model:
-              currentModel +
-              (currentProvider !== "auto" ? `:${currentProvider}` : ""),
+            model: currentModel + (provider !== "auto" ? `:${provider}` : ""),
             messages: [
               {
                 role: "system",
@@ -125,22 +121,21 @@ export async function POST(request: Request) {
             )
           ) {
             hasRetried = true;
-            const availableFallbackModels = MODELS.filter(
-              (m) => m.value !== model
-            );
-            const randomIndex = Math.floor(
-              Math.random() * availableFallbackModels.length
-            );
-            const fallbackModel = availableFallbackModels[randomIndex];
-            if (fallbackModel) {
-              currentModel = fallbackModel.value;
-              currentProvider = fallbackModel.autoProvider ?? "auto";
-
-              const switchMessage = `\n\n_Note: The selected model was not available. Switched to \`${fallbackModel.value}\`._\n\n`;
-              await writer.write(encoder.encode(switchMessage));
-
-              return tryGeneration();
+            if (model === DEFAULT_MODEL) {
+              const availableFallbackModels = MODELS.filter(
+                (m) => m.value !== model
+              );
+              const randomIndex = Math.floor(
+                Math.random() * availableFallbackModels.length
+              );
+              currentModel = availableFallbackModels[randomIndex];
+            } else {
+              currentModel = DEFAULT_MODEL;
             }
+            const switchMessage = `\n\n_Note: The selected model was not available. Switched to \`${currentModel}\`._\n\n`;
+            await writer.write(encoder.encode(switchMessage));
+
+            return tryGeneration();
           }
 
           try {

@@ -7,27 +7,6 @@ import { Message } from "@/lib/type";
 
 const MESSAGES_QUERY_KEY = (projectName: string) =>
   ["messages", projectName] as const;
-const DEFAULT_FIRST_MESSAGE = (projectName: string): Message[] => {
-  if (projectName === "new") {
-    return [
-      {
-        id: uuidv4(),
-        role: "assistant",
-        content: `Hello! Welcome to DeepSite!
-Ask me anything about DeepSite and AI, and I'll help you build it.`,
-        createdAt: new Date(),
-      },
-    ];
-  }
-  return [
-    {
-      id: uuidv4(),
-      role: "assistant",
-      content: "Welcome back to your project! 🤩",
-      createdAt: new Date(),
-    },
-  ];
-};
 
 export function useChat(projectName: string) {
   const queryClient = useQueryClient();
@@ -48,7 +27,7 @@ export function useChat(projectName: string) {
     queryKey: MESSAGES_QUERY_KEY(projectName),
     queryFn: () => {
       if (projectName === "new") {
-        return DEFAULT_FIRST_MESSAGE(projectName);
+        return [];
       }
       const storedData = localStorage.getItem(`messages-${projectName}`);
       if (storedData) {
@@ -61,7 +40,7 @@ export function useChat(projectName: string) {
           console.error("Failed to parse stored messages:", error);
         }
       }
-      return DEFAULT_FIRST_MESSAGE(projectName);
+      return [];
     },
     refetchOnMount: false,
     refetchOnWindowFocus: false,

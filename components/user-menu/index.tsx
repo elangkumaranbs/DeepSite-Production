@@ -156,7 +156,7 @@ export function UserMenu() {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link
-            href={`https://huggingface.co/${session.user.username}/settings`}
+            href={`https://huggingface.co/settings/profile`}
             target="_blank"
           >
             Settings

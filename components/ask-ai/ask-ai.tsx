@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { useGeneration } from "./useGeneration";
 import { File, MobileTabType, ProviderType } from "@/lib/type";
 import { Models } from "./models";
-import { MODELS } from "@/lib/providers";
+import { DEFAULT_MODEL, MODELS } from "@/lib/providers";
 import { Redesign } from "./redesign";
 import { Uploader } from "./uploader";
 import { InputMentions } from "./input-mentions";
@@ -39,9 +39,9 @@ export function AskAI({
   projectName?: string;
 }) {
   const contentEditableRef = useRef<HTMLDivElement | null>(null);
-  const [model = MODELS[0].value, setModel] = useLocalStorage<string>(
+  const [model = DEFAULT_MODEL, setModel] = useLocalStorage<string>(
     "model",
-    MODELS[0].value
+    DEFAULT_MODEL
   );
   const [provider, setProvider] = useLocalStorage<ProviderType>(
     "provider",

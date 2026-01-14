@@ -2,7 +2,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Settings, Check } from "lucide-react";
+import { Settings, Check, Plus } from "lucide-react";
 import { RiContrastFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
@@ -108,7 +108,6 @@ export const ProjectSettings = ({
             <div className="flex flex-col -space-y-1 items-start">
               <p className="text-sm font-bold text-primary">
                 {project?.cardData?.title ?? "New DeepSite website"}{" "}
-                {/* {project?.cardData?.emoji} */}
               </p>
               <p className="text-xs text-muted-foreground">
                 Live preview of your app
@@ -119,13 +118,13 @@ export const ProjectSettings = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64" align="start">
           <DropdownMenuItem>
-            <Link href="/" className="flex items-center gap-1.5">
+            <Link href="/deepsite" className="flex items-center gap-1.5">
               <ChevronLeft className="size-3.5" />
               Go to Projects
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          {!session?.user?.isPro && (
+          {session?.user?.isPro && (
             <>
               <DropdownMenuItem>
                 <Link
@@ -140,6 +139,12 @@ export const ProjectSettings = ({
               <DropdownMenuSeparator />
             </>
           )}
+          <DropdownMenuItem>
+            <Link href="/deepsite/new" className="flex items-center gap-1.5">
+              <Plus className="size-3.5" />
+              New Project
+            </Link>
+          </DropdownMenuItem>
           {project && (
             <>
               <DropdownMenuItem onClick={() => setOpen(true)}>
