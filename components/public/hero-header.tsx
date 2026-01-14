@@ -1,7 +1,15 @@
 "use client";
 import { motion } from "framer-motion";
 
-const TITLE = ["Your", "next", "web-based", "application", "starts", "here"];
+const TITLE = [
+  "Create",
+  "stunning",
+  "websites",
+  "with",
+  "next-gen",
+  "AI",
+  "tools",
+];
 
 export function HeroHeader() {
   return (
@@ -25,9 +33,9 @@ export function HeroHeader() {
           </motion.span>
         ))}
       </h1>
-      <p className="text-muted-foreground mx-auto max-w-2xl md:text-lg lg:text-xl">
-        Build your next web-based application with ease and speed by using AI
-        Vibe Coding.
+      <p className="text-muted-foreground mx-auto max-w-2xl md:text-lg lg:text-xl text-balance">
+        Build, design, and deploy stunning websites in minutes with AI-powered
+        development.
       </p>
     </header>
   );
