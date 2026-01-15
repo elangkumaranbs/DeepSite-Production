@@ -165,17 +165,37 @@ export function AppEditorChat({
                     li: ({ children }) => (
                       <li className="text-muted-foreground">{children}</li>
                     ),
-                    a: ({ children, href }) => (
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-blue-500 underline inline-flex items-center gap-0.5"
-                      >
-                        <ExternalLink className="size-3" />
-                        {children}
-                      </a>
-                    ),
+                    a: ({ children, href }) => {
+                      const isValidUrl =
+                        href &&
+                        (href.startsWith("http://") ||
+                          href.startsWith("https://") ||
+                          href.startsWith("/") ||
+                          href.startsWith("#") ||
+                          href.startsWith("mailto:") ||
+                          href.startsWith("tel:"));
+                      const safeHref = isValidUrl ? href : "#";
+
+                      return (
+                        <a
+                          href={safeHref}
+                          target={
+                            isValidUrl && href.startsWith("http")
+                              ? "_blank"
+                              : undefined
+                          }
+                          rel={
+                            isValidUrl && href.startsWith("http")
+                              ? "noopener noreferrer"
+                              : undefined
+                          }
+                          className="hover:text-blue-500 underline inline-flex items-center gap-0.5"
+                        >
+                          <ExternalLink className="size-3" />
+                          {children}
+                        </a>
+                      );
+                    },
                     pre: ({ children }) => <>{children}</>,
                     p: ({ children }) => {
                       if (

@@ -52,19 +52,35 @@ export async function PUT(
       { status: 500 }
     );
   }
+
+  // Escape YAML values to prevent injection attacks
+  const escapeYamlValue = (value: string): string => {
+    if (/[:|>]|^[-*#]|^\s|['"]/.test(value) || value.includes("\n")) {
+      return `"${value.replace(/"/g, '\\"')}"`;
+    }
+    return value;
+  };
+
+  // Escape commit message to prevent injection
+  const escapeCommitMessage = (message: string): string => {
+    return message.replace(/[\r\n]/g, " ").slice(0, 200);
+  };
+
   const updatedReadmeFile = readmeFile.replace(
     /^title:\s*(.*)$/m,
-    `title: ${newTitle}`
+    `title: ${escapeYamlValue(newTitle)}`
   );
 
   await uploadFile({
     repo,
     accessToken: token,
     file: new File([updatedReadmeFile], "README.md", { type: "text/markdown" }),
-    commitTitle: `🐳 ${format(new Date(), "dd/MM")} - ${format(
-      new Date(),
-      "HH:mm"
-    )} - Rename project to "${newTitle}"`,
+    commitTitle: escapeCommitMessage(
+      `🐳 ${format(new Date(), "dd/MM")} - ${format(
+        new Date(),
+        "HH:mm"
+      )} - Rename project to "${newTitle}"`
+    ),
   });
 
   return NextResponse.json(

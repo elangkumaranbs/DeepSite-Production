@@ -249,7 +249,10 @@ export function InputMentions({
         className="pb-2 min-h-10 max-h-[130px] overflow-y-auto w-full h-full resize-none outline-none text-primary text-sm bg-transparent empty:before:block empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground empty:before:pointer-events-none"
         data-placeholder={
           redesignMdUrl
-            ? `I'll redesign ${redesignMdUrl}, want to add something?`
+            ? `I'll redesign ${redesignMdUrl.replace(
+                /[<>"']/g,
+                ""
+              )}, want to add something?`
             : files && files.length > 0
             ? "Ask me anything. Type @ to mention a file..."
             : "Ask me anything..."

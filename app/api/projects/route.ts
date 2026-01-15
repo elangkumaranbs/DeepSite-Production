@@ -45,12 +45,25 @@ export async function POST(request: Request) {
     name: session.user?.username + "/" + formattedTitle,
   };
 
+  // Escape YAML values to prevent injection attacks
+  const escapeYamlValue = (value: string): string => {
+    if (/[:|>]|^[-*#]|^\s|['"]/.test(value) || value.includes("\n")) {
+      return `"${value.replace(/"/g, '\\"')}"`;
+    }
+    return value;
+  };
+
+  // Escape markdown headers to prevent injection
+  const escapeMarkdownHeader = (value: string): string => {
+    return value.replace(/^#+\s*/g, "").replace(/\n/g, " ");
+  };
+
   const colorFrom = COLORS[Math.floor(Math.random() * COLORS.length)];
   const colorTo = COLORS[Math.floor(Math.random() * COLORS.length)];
   const emoji =
     EMOJIS_FOR_SPACE[Math.floor(Math.random() * EMOJIS_FOR_SPACE.length)];
   const README = `---
-title: ${projectTitle}
+title: ${escapeYamlValue(projectTitle)}
 colorFrom: ${colorFrom}
 colorTo: ${colorTo}
 sdk: static
@@ -59,7 +72,7 @@ tags:
   - deepsite-v4
 ---
 
-# ${title}
+# ${escapeMarkdownHeader(title)}
 
 This project has been created with [DeepSite](https://huggingface.co/deepsite) AI Vibe Coding.
 `;
@@ -89,7 +102,11 @@ This project has been created with [DeepSite](https://huggingface.co/deepsite) A
       sdk: "static",
     });
 
-    const commitTitle = prompt ?? "Initial DeepSite commit";
+    // Escape commit title to prevent injection
+    const escapeCommitTitle = (title: string): string => {
+      return title.replace(/[\r\n]/g, " ").slice(0, 200);
+    };
+    const commitTitle = escapeCommitTitle(prompt ?? "Initial DeepSite commit");
     await uploadFiles({
       repo,
       files: filesToUpload,

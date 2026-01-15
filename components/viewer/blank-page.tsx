@@ -51,7 +51,7 @@ export function BlankPage() {
               onClick={() => {
                 const promptInput = document.getElementById("prompt-input");
                 if (promptInput) {
-                  (promptInput as HTMLDivElement).innerHTML =
+                  (promptInput as HTMLDivElement).textContent =
                     suggestion.long_value;
                 }
               }}

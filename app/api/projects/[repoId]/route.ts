@@ -42,10 +42,17 @@ export async function PUT(
     }
     filesToUpload.push(new File([file.content], file.path, { type: mimeType }));
   }
+  // Escape commit title to prevent injection
+  const escapeCommitTitle = (title: string): string => {
+    return title.replace(/[\r\n]/g, " ").slice(0, 200);
+  };
+
   const baseTitle = isManualChanges
     ? ""
     : `🐳 ${format(new Date(), "dd/MM")} - ${format(new Date(), "HH:mm")} - `;
-  const commitTitle = baseTitle + (prompt ?? "Follow-up DeepSite commit");
+  const commitTitle = escapeCommitTitle(
+    baseTitle + (prompt ?? "Follow-up DeepSite commit")
+  );
   const response = await uploadFiles({
     repo,
     files: filesToUpload,

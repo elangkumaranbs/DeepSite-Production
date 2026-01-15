@@ -30,7 +30,7 @@ export const Commits = function ({ commits }: { commits?: Commit[] }) {
   const handleViewCommit = (commitId: string) => {
     let url = window.location.pathname;
     if (commitId !== commits?.[0].oid) {
-      url += `?commit=${commitId}`;
+      url += `?commit=${encodeURIComponent(commitId)}`;
     }
     window.location.replace(url);
   };
