@@ -84,7 +84,6 @@
   link.target = "_blank";
   link.rel = "noopener noreferrer";
 
-  // Create icon placeholder
   const icon = document.createElement("img");
   icon.src = "https://huggingface.co/deepsite/logo.svg";
   icon.alt = "DeepSite";
@@ -93,10 +92,8 @@
   icon.style.height = "16px";
   icon.style.filter = "brightness(0) invert(1)";
 
-  // Create text
   const text = document.createTextNode("Made with DeepSite");
 
-  // Apply styles to wrapper (like button element)
   Object.assign(badgeWrapper.style, {
     position: "fixed",
     bottom: "20px",
