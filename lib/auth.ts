@@ -50,26 +50,9 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      const basePath = "/deepsite";
-      
-      if (url.startsWith("/")) {
-        return `${baseUrl}${basePath}${url}`;
-      }
-      else if (url.startsWith(baseUrl)) {
-        const path = url.substring(baseUrl.length);
-        if (!path.startsWith(basePath)) {
-          return `${baseUrl}${basePath}${path}`;
-        }
-        return url;
-      }
-      return url;
-    },
-  },
-  pages: {
-    signIn: "/",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
 };
 
 export const auth = () => getServerSession(authOptions);
