@@ -78,7 +78,7 @@ export function UserMenu() {
     if (!isOnTargetPage) {
       window.open(`${targetUrl}?signin=true`, "_blank");
     } else {
-      signIn("huggingface", { callbackUrl: "/" });
+      signIn("huggingface", { callbackUrl: "/deepsite" });
     }
   };
 
