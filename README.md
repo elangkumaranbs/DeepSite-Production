@@ -4,7 +4,7 @@ emoji: 🐳
 colorFrom: blue
 colorTo: blue
 sdk: docker
-pinned: false
+pinned: true
 app_port: 3001
 license: mit
 failure_strategy: rollback
