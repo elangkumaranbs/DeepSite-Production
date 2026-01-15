@@ -21,7 +21,6 @@ export function AnimatedDotsBackground() {
     const oklchToRgb = (
       oklchString: string
     ): { r: number; g: number; b: number } => {
-      // Create a temporary element to compute the color
       const temp = document.createElement("div");
       temp.style.color = oklchString;
       document.body.appendChild(temp);
