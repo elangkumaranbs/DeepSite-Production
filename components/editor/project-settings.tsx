@@ -98,7 +98,7 @@ export const ProjectSettings = ({
               <span className="text-3xl">{project?.cardData?.emoji}</span>
             ) : (
               <Image
-                src="/logo.svg"
+                src="/deepsite/logo.svg"
                 alt="DeepSite"
                 width={100}
                 height={100}

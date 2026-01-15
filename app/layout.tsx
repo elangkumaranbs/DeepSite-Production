@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   icons: {
-    icon: "/logo.svg",
-    shortcut: "/logo.svg",
-    apple: "/logo.svg",
+    icon: "/deepsite/logo.svg",
+    shortcut: "/deepsite/logo.svg",
+    apple: "/deepsite/logo.svg",
   },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,

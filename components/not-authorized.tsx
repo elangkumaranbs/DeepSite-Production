@@ -104,7 +104,7 @@ export const NotAuthorizedDomain = () => {
         <DialogTitle className="hidden" />
         <div className="max-w-md mx-auto text-center px-6 py-12">
           <Image
-            src="/logo.svg"
+            src="/deepsite/logo.svg"
             alt="DeepSite"
             width={48}
             height={48}

@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  basePath: "/deepsite/api/auth",
   providers: [
     {
       id: "huggingface",
