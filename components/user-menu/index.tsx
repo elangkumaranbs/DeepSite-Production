@@ -51,35 +51,6 @@ export function UserMenu() {
     signIn("huggingface", {
       callbackUrl: "/deepsite",
     });
-    // if (window.location.hostname === "localhost") {
-    //   return;
-    // }
-    // const targetUrl = "https://huggingface.co/deepsite";
-
-    // let isOnTargetPage = false;
-    // if (typeof window !== "undefined") {
-    //   try {
-    //     const isInIframe = window !== window.parent;
-
-    //     if (isInIframe) {
-    //       try {
-    //         isOnTargetPage = window.parent.location.href.startsWith(targetUrl);
-    //       } catch {
-    //         isOnTargetPage = false;
-    //       }
-    //     } else {
-    //       isOnTargetPage = window.location.href.startsWith(targetUrl);
-    //     }
-    //   } catch {
-    //     isOnTargetPage = false;
-    //   }
-    // }
-
-    // if (!isOnTargetPage) {
-    //   window.open(`${targetUrl}?signin=true`, "_blank");
-    // } else {
-    //   signIn("huggingface", { callbackUrl: "/deepsite" });
-    // }
   };
 
   const handleSignOut = () => {
