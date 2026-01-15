@@ -1,9 +1,16 @@
-import NextAuth, { DefaultSession } from "next-auth";
+import "next-auth";
+import "next-auth/jwt";
 
 declare module "next-auth" {
   interface Session {
     accessToken?: string;
-    isPro?: boolean;
+    user: {
+      username?: string;
+      isPro?: boolean;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
   }
 
   interface User {

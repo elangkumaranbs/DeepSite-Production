@@ -1,8 +1,7 @@
-import NextAuth from "next-auth";
-import type { NextAuthConfig } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
+import { getServerSession } from "next-auth/next";
 
-export const authConfig = {
-  basePath: "/deepsite/api/auth",
+export const authOptions: NextAuthOptions = {
   providers: [
     {
       id: "huggingface",
@@ -10,7 +9,7 @@ export const authConfig = {
       type: "oauth",
       clientId: process.env.AUTH_HUGGINGFACE_ID,
       clientSecret: process.env.AUTH_HUGGINGFACE_SECRET,
-      issuer: "https://huggingface.co",
+      wellKnown: "https://huggingface.co/.well-known/openid-configuration",
       authorization: {
         url: "https://huggingface.co/oauth/authorize",
         params: {
@@ -25,6 +24,7 @@ export const authConfig = {
           id: profile.sub,
           name: profile.name || profile.preferred_username,
           username: profile.preferred_username,
+          email: profile.email,
           image: profile.picture,
           isPro: profile.isPro || false,
         };
@@ -43,35 +43,34 @@ export const authConfig = {
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;
+      session.accessToken = token.accessToken;
       if (session.user) {
-        session.user.username = token.username as string;
-        session.user.isPro = token.isPro as boolean;
+        session.user.username = token.username;
+        session.user.isPro = token.isPro;
       }
       return session;
     },
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnNew = nextUrl.pathname.includes("/new");
-
-      const pathSegments = nextUrl.pathname.split("/").filter(Boolean);
-      const isOnProjectPage =
-        pathSegments.length >= 2 &&
-        !nextUrl.pathname.includes("/new") &&
-        !nextUrl.pathname.includes("/api");
-
-      if (isOnProjectPage || isOnNew) {
-        if (isLoggedIn) return true;
-        return false;
+    async redirect({ url, baseUrl }) {
+      const basePath = "/deepsite";
+      
+      if (url.startsWith("/")) {
+        return `${baseUrl}${basePath}${url}`;
       }
-
-      return true;
+      else if (url.startsWith(baseUrl)) {
+        const path = url.substring(baseUrl.length);
+        if (!path.startsWith(basePath)) {
+          return `${baseUrl}${basePath}${path}`;
+        }
+        return url;
+      }
+      return url;
     },
   },
   pages: {
-    signIn: "/",
+    signIn: "/deepsite",
   },
-  trustHost: true,
-} satisfies NextAuthConfig;
+  secret: process.env.NEXTAUTH_SECRET,
+};
 
-export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
+// Helper function to get the current session (replaces next-auth v5's auth())
+export const auth = () => getServerSession(authOptions);
