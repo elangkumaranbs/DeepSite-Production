@@ -2,8 +2,6 @@ import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth/next";
 
 export const authOptions: NextAuthOptions = {
-  // @ts-expect-error - basePath is needed for production but not in TypeScript types
-  basePath: "/deepsite/api/auth",
   providers: [
     {
       id: "huggingface",
@@ -54,37 +52,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-  trustHost: true,
-  useSecureCookies: process.env.NODE_ENV === "production",
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-    csrfToken: {
-      name: `next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-    callbackUrl: {
-      name: `next-auth.callback-url`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-  },
 };
 
 export const auth = () => getServerSession(authOptions);
