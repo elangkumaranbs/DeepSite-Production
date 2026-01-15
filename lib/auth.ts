@@ -20,6 +20,7 @@ export const authOptions: NextAuthOptions = {
       userinfo: "https://huggingface.co/oauth/userinfo",
       checks: ["state"],
       profile(profile) {
+        console.log("++ PROFILE ++", profile);
         return {
           id: profile.sub,
           name: profile.name || profile.preferred_username,

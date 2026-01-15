@@ -66,7 +66,7 @@ export function UserProjects() {
               Manage your projects and keep them organized.
             </p>
           </div>
-          <Link href="/deepsite/new" className="max-sm:w-full!">
+          <Link href="/new" className="max-sm:w-full!">
             <Button variant="bordered" size="sm" className="max-sm:w-full!">
               <Plus className="size-4" />
               New project
@@ -85,7 +85,7 @@ export function UserProjects() {
             />
           ))}
           {projects?.length === 0 && (
-            <Link href="/deepsite/new" className="group/big-card">
+            <Link href="/new" className="group/big-card">
               <div className="h-40 rounded-lg overflow-hidden transition-all border-2 border-background ring-[1px] ring-border relative bg-accent flex items-center justify-center hover:bg-accent/80">
                 <div className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground">
                   <Plus className="size-4" />

@@ -41,7 +41,7 @@ export function Redesign({
       return;
     }
     setIsLoading(true);
-    const response = await fetch("/api/redesign", {
+    const response = await fetch("/deepsite/api/redesign", {
       method: "PUT",
       body: JSON.stringify({ url: url.trim() }),
       headers: {

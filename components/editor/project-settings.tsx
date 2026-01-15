@@ -118,7 +118,7 @@ export const ProjectSettings = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64" align="start">
           <DropdownMenuItem>
-            <Link href="/deepsite" className="flex items-center gap-1.5">
+            <Link href="/" className="flex items-center gap-1.5">
               <ChevronLeft className="size-3.5" />
               Go to Projects
             </Link>
@@ -140,7 +140,7 @@ export const ProjectSettings = ({
             </>
           )}
           <DropdownMenuItem>
-            <Link href="/deepsite/new" className="flex items-center gap-1.5">
+            <Link href="/new" className="flex items-center gap-1.5">
               <Plus className="size-3.5" />
               New Project
             </Link>

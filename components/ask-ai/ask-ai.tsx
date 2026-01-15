@@ -78,7 +78,7 @@ export function AskAI({
           },
           setModel
         );
-        router.replace("/deepsite/new");
+        router.replace("/new");
       }, 200);
     }
   });

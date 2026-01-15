@@ -203,7 +203,7 @@ export function UserMenu() {
                   </Link>
                 )}
                 <Link
-                  href="/deepsite/new"
+                  href="/new"
                   className="text-xs text-muted-foreground hover:text-primary flex items-center justify-start gap-1"
                 >
                   New project
@@ -221,7 +221,7 @@ export function UserMenu() {
                   <span className="font-medium">No projects found.</span> <br />
                   Create a new project to get started.
                 </p>
-                <Link href="/deepsite/new">
+                <Link href="/new">
                   <Button variant="outline" size="xs" className="w-full">
                     New project
                     <Plus className="size-2.5" />
