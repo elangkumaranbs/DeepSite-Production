@@ -67,7 +67,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/deepsite",
+    signIn: "/",
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
