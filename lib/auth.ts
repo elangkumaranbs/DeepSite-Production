@@ -72,5 +72,4 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-// Helper function to get the current session (replaces next-auth v5's auth())
 export const auth = () => getServerSession(authOptions);
