@@ -52,10 +52,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  pages: {
-    signIn: '/deepsite/api/auth/signin',
-    signOut: '/deepsite/api/auth/signout',
-  },
   secret: process.env.NEXTAUTH_SECRET,
 };
 
