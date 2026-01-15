@@ -42,7 +42,7 @@ export function UserMenu() {
         newUrl.searchParams.delete("signin");
         window.history.replaceState({}, "", newUrl.toString());
 
-        signIn("huggingface", { callbackUrl: "/" });
+        signIn("huggingface", { callbackUrl: "/deepsite" });
       }
     }
   }, [session, status]);
@@ -50,7 +50,7 @@ export function UserMenu() {
   const handleSignIn = () => {
     if (window.location.hostname === "localhost") {
       signIn("huggingface", {
-        callbackUrl: "/",
+        callbackUrl: "/deepsite",
       });
       return;
     }
@@ -83,7 +83,7 @@ export function UserMenu() {
   };
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: "/" });
+    signOut({ callbackUrl: "/deepsite" });
   };
 
   if (isLoading) {
