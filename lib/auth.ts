@@ -2,6 +2,8 @@ import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth/next";
 
 export const authOptions: NextAuthOptions = {
+  // @ts-expect-error - basePath is needed for production but not in TypeScript types
+  basePath: "/deepsite/api/auth",
   providers: [
     {
       id: "huggingface",
@@ -20,7 +22,6 @@ export const authOptions: NextAuthOptions = {
       userinfo: "https://huggingface.co/oauth/userinfo",
       checks: ["state"],
       profile(profile) {
-        console.log("++ PROFILE ++", profile);
         return {
           id: profile.sub,
           name: profile.name || profile.preferred_username,
