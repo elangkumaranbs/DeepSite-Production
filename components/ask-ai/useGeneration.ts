@@ -4,11 +4,12 @@ import { useRef } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
+import { useLocalStorage } from "react-use";
+import { useSession } from "next-auth/react";
 
 import { formatResponse } from "@/lib/format";
 import { File, Message, MessageActionType, ProviderType } from "@/lib/type";
 import { getContextFilesFromPrompt } from "@/lib/utils";
-import { useLocalStorage } from "react-use";
 
 const MESSAGES_QUERY_KEY = (projectName: string) =>
   ["messages", projectName] as const;
@@ -22,6 +23,7 @@ export const useGeneration = (projectName: string) => {
     `messages-${projectName}`,
     []
   );
+  const { data: session } = useSession();
 
   const { data: isLoading } = useQuery({
     queryKey: ["ai.generation.isLoading"],
@@ -348,10 +350,14 @@ export const useGeneration = (projectName: string) => {
                   isThinking: false,
                   isAborted: true,
                   content: errorData?.showProMessage
-                    ? `You have exceeded your monthly included credits with Hugging Face inference provider. Please consider upgrading to a pro plan.`
+                    ? session?.user?.isPro ? "You have already reached your monthly included credits with Hugging Face Pro plan. Please consider adding more credits to your account." : "You have exceeded your monthly included credits with Hugging Face inference provider. Please consider upgrading to a pro plan."
                     : `Error: ${errorData.messageError}`,
                   actions: errorData?.showProMessage
-                    ? [
+                    ? session?.user?.isPro ? [{
+                      label: "Add more credits",
+                      variant: "default",
+                      type: MessageActionType.ADD_CREDITS,
+                    }] : [
                         {
                           label: "Upgrade to Pro",
                           variant: "pro",

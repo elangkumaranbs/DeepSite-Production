@@ -96,4 +96,3 @@ export const ProTag = ({
     PRO
   </span>
 );
-export default ProModal;

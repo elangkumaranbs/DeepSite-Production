@@ -141,7 +141,8 @@ export async function POST(request: Request) {
           try {
             let errorPayload = "";
             if (
-              errorMessage?.includes("exceeded your monthly included credits")
+              errorMessage?.includes("exceeded your monthly included credits") ||
+              errorMessage?.includes("reached the free monthly usage limit")
             ) {
               errorPayload = JSON.stringify({
                 messageError: errorMessage,

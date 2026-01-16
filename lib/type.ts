@@ -10,6 +10,7 @@ export enum MessageActionType {
   PUBLISH_PROJECT = "PUBLISH_PROJECT",
   SEE_LIVE_PREVIEW = "SEE_LIVE_PREVIEW",
   UPGRADE_TO_PRO = "UPGRADE_TO_PRO",
+  ADD_CREDITS = "ADD_CREDITS",
 }
 export type MessageAction = {
   label: string;

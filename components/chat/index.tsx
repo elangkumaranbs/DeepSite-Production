@@ -19,7 +19,7 @@ import { MessageAction, MessageActionType, File } from "@/lib/type";
 import { Button } from "@/components/ui/button";
 import { getFileIcon } from "@/components/ask-ai/input-mentions";
 import ProIcon from "@/assets/pro.svg";
-import ProModal from "../pro-modal";
+import { ProModal } from "../pro-modal";
 
 export function AppEditorChat({
   isNew,
@@ -67,6 +67,11 @@ export function AppEditorChat({
         );
       case MessageActionType.UPGRADE_TO_PRO:
         return setOpenProModal(true);
+      case MessageActionType.ADD_CREDITS:
+        return window.open(
+          "https://huggingface.co/settings/billing?add-credits=true",
+          "_blank"
+        );
     }
   };
 
