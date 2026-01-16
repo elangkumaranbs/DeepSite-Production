@@ -13,7 +13,7 @@ export default async function ProjectPage({
   const session = await auth();
 
   if (!session) {
-    redirect("/deepsite/api/auth/signin");
+    redirect("/api/auth/signin");
   }
 
   const { owner, repoId } = await params;

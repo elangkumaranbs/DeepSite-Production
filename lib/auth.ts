@@ -61,6 +61,9 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  pages: {
+    signIn: "/deepsite/signin",
+  },
   secret: process.env.NEXTAUTH_SECRET,
 };
 

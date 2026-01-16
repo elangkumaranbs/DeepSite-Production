@@ -14,7 +14,7 @@ export function Navigation() {
             alt="DeepSite"
             width={100}
             height={100}
-            className="size-8"
+            className="size-8 grayscale invert-100 brightness-0"
           />
           <p className="text-lg font-bold text-primary">DeepSite</p>
         </Link>

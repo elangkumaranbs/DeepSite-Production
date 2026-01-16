@@ -252,7 +252,7 @@ export function UserMenu() {
             Hugging Face
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleSignOut}>
+        <DropdownMenuItem onClick={handleSignOut} variant="destructive">
           <LogOut className="size-4" />
           Sign out
         </DropdownMenuItem>

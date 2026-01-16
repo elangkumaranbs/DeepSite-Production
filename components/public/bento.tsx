@@ -37,7 +37,7 @@ export const Bento = () => {
               </span>
             </div>
           </div>
-          <div className="absolute -top-20 -right-20 w-40 h-40 bg-linear-to-r from-purple-500 to-pink-500 opacity-20 blur-3xl rounded-full transition-all duration-700 ease-out group-hover:scale-[4] group-hover:opacity-30" />
+          {/* <div className="absolute -top-20 -right-20 w-40 h-40 bg-linear-to-r from-purple-500 to-pink-500 opacity-20 blur-3xl rounded-full transition-all duration-700 ease-out group-hover:scale-[4] group-hover:opacity-30" /> */}
         </div>
 
         <div className="relative p-8 rounded-2xl border border-border/80 shadow-2xs bg-linear-to-b from-background to-background/50 bg-card overflow-hidden group hover:border-border/20 transition-all duration-300">
@@ -51,7 +51,7 @@ export const Bento = () => {
               CI/CD setup required.
             </p>
           </div>
-          <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-linear-to-r from-yellow-500 to-orange-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" />
+          {/* <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-linear-to-r from-yellow-500 to-orange-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" /> */}
         </div>
 
         <div className="relative p-8 rounded-2xl border border-border/80 shadow-2xs bg-linear-to-b from-background to-background/50 bg-card overflow-hidden group hover:border-border/20 transition-all duration-300">
@@ -65,7 +65,7 @@ export const Bento = () => {
               performance.
             </p>
           </div>
-          <div className="absolute -top-10 -left-10 w-32 h-32 bg-linear-to-r from-green-500 to-emerald-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" />
+          {/* <div className="absolute -top-10 -left-10 w-32 h-32 bg-linear-to-r from-green-500 to-emerald-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" /> */}
         </div>
 
         <div className="lg:col-span-2 relative p-8 rounded-2xl border border-border/80 shadow-2xs bg-linear-to-b from-background to-background/50 bg-card overflow-hidden group hover:border-border/20 transition-all duration-300">
@@ -90,7 +90,7 @@ export const Bento = () => {
               </span>
             </div>
           </div>
-          <div className="absolute -bottom-10 right-10 w-32 h-32 bg-linear-to-r from-cyan-500 to-indigo-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" />
+          {/* <div className="absolute -bottom-10 right-10 w-32 h-32 bg-linear-to-r from-cyan-500 to-indigo-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" /> */}
         </div>
 
         <div className="relative p-8 rounded-2xl border border-border/80 shadow-2xs bg-linear-to-b from-background to-background/50 bg-card overflow-hidden group hover:border-border/20 transition-all duration-300">
@@ -104,7 +104,7 @@ export const Bento = () => {
               alike.
             </p>
           </div>
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-linear-to-r from-rose-500 to-pink-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" />
+          {/* <div className="absolute -top-10 -right-10 w-32 h-32 bg-linear-to-r from-rose-500 to-pink-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" /> */}
         </div>
 
         <div className="relative p-8 rounded-2xl border border-border/80 shadow-2xs bg-linear-to-b from-background to-background/50 bg-card overflow-hidden group hover:border-border/20 transition-all duration-300">
@@ -118,7 +118,7 @@ export const Bento = () => {
               cutting-edge AI capabilities.
             </p>
           </div>
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-linear-to-r from-yellow-500 to-amber-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" />
+          {/* <div className="absolute -top-10 -right-10 w-32 h-32 bg-linear-to-r from-yellow-500 to-amber-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" /> */}
         </div>
 
         <div className="relative p-8 rounded-2xl border border-border/80 shadow-2xs bg-linear-to-b from-background to-background/50 bg-card overflow-hidden group hover:border-border/20 transition-all duration-300">
@@ -131,7 +131,7 @@ export const Bento = () => {
               Optimized performance with edge computing and smart caching.
             </p>
           </div>
-          <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-linear-to-r from-blue-500 to-cyan-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" />
+          {/* <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-linear-to-r from-blue-500 to-cyan-500 opacity-20 blur-2xl rounded-full transition-all duration-700 ease-out group-hover:scale-[5] group-hover:opacity-35" /> */}
         </div>
       </div>
     </section>

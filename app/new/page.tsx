@@ -10,7 +10,7 @@ export default async function NewProjectPage({
   const session = await auth();
 
   if (!session) {
-    redirect("/deepsite/api/auth/signin");
+    redirect("/api/auth/signin");
   }
 
   const { prompt } = await searchParams;
