@@ -12,12 +12,15 @@ export default async function ProjectPage({
 }) {
   const session = await auth();
 
-  if (!session) {
-    redirect("/api/auth/signin");
-  }
-
   const { owner, repoId } = await params;
   const { commit } = await searchParams;
+  if (!session) {
+    redirect(
+      `/api/auth/signin?callbackUrl=/deepsite/${owner}/${repoId}${
+        commit ? `?commit=${commit}` : ""
+      }`
+    );
+  }
   const datas = await getProject(`${owner}/${repoId}`, commit);
   if (!datas?.project) {
     return notFound();
