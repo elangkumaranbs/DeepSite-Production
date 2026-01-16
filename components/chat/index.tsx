@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { getFileIcon } from "@/components/ask-ai/input-mentions";
 import ProIcon from "@/assets/pro.svg";
 import { ProModal } from "../pro-modal";
-// import AssistantAvatar from "@/assets/assistant.jpg";
+import AssistantAvatar from "@/assets/assistant.jpg";
 
 export function AppEditorChat({
   isNew,
