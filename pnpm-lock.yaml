@@ -74,6 +74,9 @@ importers:
       framer-motion:
         specifier: ^12.23.25
         version: 12.23.25(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      huggingface:
+        specifier: link:@auth/core/providers/huggingface
+        version: link:@auth/core/providers/huggingface
       i:
         specifier: ^0.3.7
         version: 0.3.7

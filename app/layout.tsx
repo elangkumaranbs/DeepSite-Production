@@ -49,6 +49,8 @@ export const viewport: Viewport = {
   themeColor: "#4f46e5",
 };
 
+// todo: if user isPro, show in the pro modal a different message (tell him to add credits)
+
 export default async function RootLayout({
   children,
 }: Readonly<{

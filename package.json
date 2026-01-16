@@ -31,6 +31,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.25",
+    "huggingface": "link:@auth/core/providers/huggingface",
     "i": "^0.3.7",
     "lucide-react": "^0.554.0",
     "monaco-editor": "^0.54.0",

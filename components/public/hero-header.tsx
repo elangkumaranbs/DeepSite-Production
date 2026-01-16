@@ -16,7 +16,7 @@ export function HeroHeader() {
     <header className="mx-auto flex max-w-5xl flex-col items-center gap-3 text-center px-6 py-12 z-1">
       <div
         data-slot="badge"
-        className="rounded-full border border-indigo-500/10 px-2 py-0.5 text-xs font-medium w-fit bg-linear-to-br from-indigo-500/10 to-purple-300/20 text-indigo-500"
+        className="rounded-full border border-indigo-500/10 px-2 pl-2.5 py-0.5 text-xs font-medium w-fit bg-linear-to-br from-indigo-500/10 to-purple-300/20 text-indigo-500"
       >
         DeepSite: v4 is here 🎉
       </div>

@@ -2,6 +2,7 @@ import { AnimatedDotsBackground } from "@/components/public/animated-dots-backgr
 import { HeroHeader } from "@/components/public/hero-header";
 import { UserProjects } from "@/components/projects/user-projects";
 import { AskAiLanding } from "@/components/ask-ai/ask-ai-landing";
+import { Bento } from "@/components/public/bento";
 
 export default async function Homepage() {
   return (
@@ -16,6 +17,7 @@ export default async function Homepage() {
         </div>
       </section>
       <UserProjects />
+      <Bento />
     </>
   );
 }
