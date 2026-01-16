@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { getFileIcon } from "@/components/ask-ai/input-mentions";
 import ProIcon from "@/assets/pro.svg";
 import { ProModal } from "../pro-modal";
+import AssistantAvatar from "@/assets/assistant.jpg";
 
 export function AppEditorChat({
   isNew,
@@ -39,7 +40,6 @@ export function AppEditorChat({
   const [openProModal, setOpenProModal] = useState(false);
 
   const project = queryClient.getQueryData<SpaceEntry>(["project"]);
-  const files = queryClient.getQueryData<File[]>(["files"]) ?? [];
 
   const handleShowLastFile = (files?: string[]) => {
     if (files && files.length > 0) {
@@ -106,17 +106,15 @@ export function AppEditorChat({
           >
             <Avatar className="size-4">
               <AvatarImage
-                src={message.role === "user" ? session?.user?.image ?? "" : ""}
+                src={
+                  message.role === "user"
+                    ? session?.user?.image ?? ""
+                    : AssistantAvatar.src
+                }
                 alt="DeepSite"
                 className="size-4"
               />
-              <AvatarFallback
-                className={cn(
-                  message.role === "assistant"
-                    ? "bg-linear-to-br from-indigo-500 to-emerald-500"
-                    : ""
-                )}
-              >
+              <AvatarFallback>
                 {message.role === "user"
                   ? session?.user?.name?.charAt(0) ?? ""
                   : ""}
