@@ -41,13 +41,13 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
             httpGet:
-              path: {{ $.Values.envVars.APP_BASE | default "" }}/healthcheck
+              path: {{ $.Values.envVars.APP_BASE | default "" }}/api/healthcheck
               port: {{ $.Values.envVars.APP_PORT | default 3001 | int }}
           livenessProbe:
             failureThreshold: 30
             periodSeconds: 10
             httpGet:
-              path: {{ $.Values.envVars.APP_BASE | default "" }}/healthcheck
+              path: {{ $.Values.envVars.APP_BASE | default "" }}/api/healthcheck
               port: {{ $.Values.envVars.APP_PORT | default 3001 | int }}
           ports:
             - containerPort: {{ $.Values.envVars.APP_PORT | default 3001 | int }}
