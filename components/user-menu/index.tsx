@@ -54,7 +54,7 @@ export function UserMenu() {
       });
       return;
     }
-    const targetUrl = "https://huggingface.co/deepsite";
+    const targetUrl = "https://deepsite.hf.co";
 
     let isOnTargetPage = false;
     if (typeof window !== "undefined") {
