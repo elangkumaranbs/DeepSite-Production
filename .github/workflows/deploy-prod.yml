@@ -64,7 +64,7 @@ jobs:
           echo "VALUES=$(echo "$VALUES" | yq -o=json | jq tostring)" >> $GITHUB_ENV
 
       - name: Deploy on infra-deployments
-        uses: aurelien-baudet/workflow-dispatch@v2
+        uses: the-actions-org/workflow-dispatch@v2
         with:
           workflow: Update application single value
           repo: huggingface/infra-deployments
