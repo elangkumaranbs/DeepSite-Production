@@ -19,7 +19,7 @@ export const NotAuthorizedDomain = () => {
         host === "huggingface.co" ||
         host === "hf.co" ||
         host === "enzostvs-deepsite.hf.space" ||
-        host === "huggingface.co/deepsite"
+        host === "deepsite.hf.co"
       );
     };
 
@@ -104,7 +104,7 @@ export const NotAuthorizedDomain = () => {
         <DialogTitle className="hidden" />
         <div className="max-w-md mx-auto text-center px-6 py-12">
           <Image
-            src="/deepsite/logo.svg"
+            src="/logo.svg"
             alt="DeepSite"
             width={48}
             height={48}
@@ -122,7 +122,7 @@ export const NotAuthorizedDomain = () => {
             .
           </p>
 
-          <Link href="https://huggingface.co/deepsite" target="_blank">
+          <Link href="https://deepsite.hf.co" target="_blank">
             <Button size="lg" className="text-base!">
               Go to DeepSite
             </Button>

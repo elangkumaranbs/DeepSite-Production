@@ -16,7 +16,7 @@ export default async function ProjectPage({
   const { commit } = await searchParams;
   if (!session) {
     redirect(
-      `/api/auth/signin?callbackUrl=/deepsite/${owner}/${repoId}${
+      `/api/auth/signin?callbackUrl=/${owner}/${repoId}${
         commit ? `?commit=${commit}` : ""
       }`
     );

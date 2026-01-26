@@ -18,7 +18,7 @@ export function generateSEO({
   noIndex = false,
   canonical,
 }: SEOParams = {}): Metadata {
-  const baseUrl = "https://huggingface.co/deepsite";
+  const baseUrl = "https://deepsite.hf.co";
   const fullUrl = `${baseUrl}${path}`;
   const canonicalUrl = canonical || fullUrl;
 
@@ -98,7 +98,7 @@ export function generateStructuredData(
         ...baseStructuredData,
         name: "DeepSite",
         description: "Build websites with AI, no code required",
-        url: "https://huggingface.co/deepsite",
+        url: "https://deepsite.hf.co",
         applicationCategory: "DeveloperApplication",
         operatingSystem: "Web",
         offers: {
@@ -109,7 +109,7 @@ export function generateStructuredData(
         creator: {
           "@type": "Organization",
           name: "DeepSite",
-          url: "https://huggingface.co/deepsite",
+          url: "https://deepsite.hf.co",
         },
         ...data,
       };
@@ -118,8 +118,8 @@ export function generateStructuredData(
       return {
         ...baseStructuredData,
         name: "DeepSite",
-        url: "https://huggingface.co/deepsite",
-        logo: "https://huggingface.co/deepsite/logo.svg",
+        url: "https://deepsite.hf.co",
+        logo: "https://deepsite.hf.co/logo.svg",
         description: "AI-powered web development platform",
         sameAs: [
           // Add social media links here if available

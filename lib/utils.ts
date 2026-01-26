@@ -118,7 +118,7 @@ export const defaultHTML = `<!DOCTYPE html>
         Ask me anything.
       </h1>
     </div>
-      <img src="https://huggingface.co/deepsite/arrow.svg" class="absolute bottom-8 left-0 w-[100px] transform rotate-30 dark:invert dark:brightness-0" />
+      <img src="https://deepsite.hf.co/arrow.svg" class="absolute bottom-8 left-0 w-[100px] transform rotate-30 dark:invert dark:brightness-0" />
     <script></script>
   </body>
 </html>
@@ -126,7 +126,7 @@ export const defaultHTML = `<!DOCTYPE html>
 
 export function injectDeepSiteBadge(html: string): string {
   const badgeScript =
-    '<script src="https://huggingface.co/deepsite/deepsite-badge.js"></script>';
+    '<script src="https://deepsite.hf.co/deepsite-badge.js"></script>';
 
   // Remove any existing badge script to avoid duplicates
   const cleanedHtml = html.replace(

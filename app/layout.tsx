@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   icons: {
-    icon: "/deepsite/logo.svg",
-    shortcut: "/deepsite/logo.svg",
-    apple: "/deepsite/logo.svg",
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
   },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
@@ -57,11 +57,11 @@ export default async function RootLayout({
   const structuredData = generateStructuredData("WebApplication", {
     name: "DeepSite",
     description: "Build websites with AI, no code required",
-    url: "https://huggingface.co/deepsite",
+    url: "https://deepsite.hf.co",
   });
   const organizationData = generateStructuredData("Organization", {
     name: "DeepSite",
-    url: "https://huggingface.co/deepsite",
+    url: "https://deepsite.hf.co",
   });
 
   return (

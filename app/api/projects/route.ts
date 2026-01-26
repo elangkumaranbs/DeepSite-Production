@@ -74,7 +74,7 @@ tags:
 
 # ${escapeMarkdownHeader(title)}
 
-This project has been created with [DeepSite](https://huggingface.co/deepsite) AI Vibe Coding.
+This project has been created with [DeepSite](https://deepsite.hf.co) AI Vibe Coding.
 `;
 
   const filesToUpload: File[] = [

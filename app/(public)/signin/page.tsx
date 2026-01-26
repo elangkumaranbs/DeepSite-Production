@@ -14,7 +14,7 @@ export default async function SignInPage({
         <p className="text-lg text-muted-foreground mb-8">
           You can&apos;t access this resource without being signed in.
         </p>
-        <LoginButtons callbackUrl={callbackUrl ?? "/deepsite"} />
+        <LoginButtons callbackUrl={callbackUrl ?? "/"} />
       </div>
     </section>
   );

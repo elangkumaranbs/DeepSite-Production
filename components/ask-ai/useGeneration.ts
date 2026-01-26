@@ -140,7 +140,7 @@ export const useGeneration = (projectName: string) => {
       ],
     });
     try {
-      const response = await fetch("/deepsite/api/projects", {
+      const response = await fetch("/api/projects", {
         method: "POST",
         body: JSON.stringify({
           projectTitle,
@@ -234,7 +234,7 @@ export const useGeneration = (projectName: string) => {
     const isFollowUp = files?.length > 0;
     abortController.current = new AbortController();
 
-    const request = await fetch("/deepsite/api/ask", {
+    const request = await fetch("/api/ask", {
       method: "POST",
       body: JSON.stringify({
         prompt,

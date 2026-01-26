@@ -33,7 +33,7 @@ export function BigProjectCard({
   onOpenDeleteDialog: (id: string) => void;
 }) {
   return (
-    <a href={`/deepsite/${project.name}`} className="">
+    <a href={`/${project.name}`} className="">
       <div className="group/big-card rounded-lg overflow-hidden transition-all border-2 border-background ring-[1px] ring-border relative">
         {project.private ? (
           <div className="h-40 bg-linear-to-br flex flex-col gap-1 items-center justify-center text-lg from-blue-500 to-purple-500">

@@ -42,7 +42,7 @@ export function UserMenu() {
         newUrl.searchParams.delete("signin");
         window.history.replaceState({}, "", newUrl.toString());
 
-        signIn("huggingface", { callbackUrl: "/deepsite" });
+        signIn("huggingface", { callbackUrl: "/" });
       }
     }
   }, [session, status]);
@@ -50,7 +50,7 @@ export function UserMenu() {
   const handleSignIn = () => {
     if (window.location.hostname === "localhost") {
       signIn("huggingface", {
-        callbackUrl: "/deepsite",
+        callbackUrl: "/",
       });
       return;
     }
@@ -78,12 +78,12 @@ export function UserMenu() {
     if (!isOnTargetPage) {
       window.open(`${targetUrl}?signin=true`, "_blank");
     } else {
-      signIn("huggingface", { callbackUrl: "/deepsite" });
+      signIn("huggingface", { callbackUrl: "/" });
     }
   };
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: "/deepsite" });
+    signOut({ callbackUrl: "/" });
   };
 
   if (isLoading) {
