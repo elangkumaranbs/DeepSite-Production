@@ -24,17 +24,9 @@ spec:
         paths:
           - backend:
               service:
-                name: "redirect-old-version"
+                name: {{ include "name" . }}
                 port:
-                  name: use-annotation
-            path: /
+                  name: http
+            path: {{ $.Values.ingress.path | default "/" }}
             pathType: Prefix
-#          - backend:
-#              service:
-#                name: {{ include "name" . }}
-#                port:
-#                  name: http
-#            path: {{ $.Values.ingress.path | default "/" }}
-#            pathType: Prefix
-
-  {{- end }}
+{{- end }}
