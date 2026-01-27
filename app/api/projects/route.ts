@@ -9,6 +9,9 @@ import {
   isIndexPage,
 } from "@/lib/utils";
 
+// todo: catch error while publishing project, and return the error to the user
+// if space has been created, but can't push, try again or catch well the error and return the error to the user
+
 export async function POST(request: Request) {
   const session = await auth();
   if (!session) {
@@ -95,23 +98,29 @@ This project has been created with [DeepSite](https://deepsite.hf.co) AI Vibe Co
     filesToUpload.push(new File([content], file.path, { type: mimeType }));
   }
 
+  let repoUrl: string | undefined;
+  
   try {
-    const { repoUrl } = await createRepo({
+    // Create the space first
+    const createResult = await createRepo({
       accessToken: token as string,
       repo: repo,
       sdk: "static",
     });
+    repoUrl = createResult.repoUrl;
 
-    // Escape commit title to prevent injection
-    const escapeCommitTitle = (title: string): string => {
-      return title.replace(/[\r\n]/g, " ").slice(0, 200);
+    // Escape commit message to prevent injection
+    const escapeCommitMessage = (message: string): string => {
+      return message.replace(/[\r\n]/g, " ").slice(0, 200);
     };
-    const commitTitle = escapeCommitTitle(prompt ?? "Initial DeepSite commit");
+    const commitMessage = escapeCommitMessage(prompt ?? "Initial DeepSite commit");
+    
+    // Upload files to the created space
     await uploadFiles({
       repo,
       files: filesToUpload,
       accessToken: token as string,
-      commitTitle,
+      commitTitle: commitMessage,
     });
 
     const path = repoUrl.split("/").slice(-2).join("/");
@@ -119,7 +128,18 @@ This project has been created with [DeepSite](https://deepsite.hf.co) AI Vibe Co
     return NextResponse.json({ repoUrl: path }, { status: 200 });
   } catch (error) {
     const errMsg =
-      error instanceof Error ? error.message : "Failed to upload files";
+      error instanceof Error ? error.message : "Failed to create or upload to space";
+    
+    // If space was created but upload failed, include the repo URL in the error
+    if (repoUrl) {
+      const path = repoUrl.split("/").slice(-2).join("/");
+      return NextResponse.json({ 
+        error: `${errMsg}. Space was created at ${path} but files could not be uploaded.`,
+        repoUrl: path,
+        partialSuccess: true
+      }, { status: 500 });
+    }
+    
     return NextResponse.json({ error: errMsg }, { status: 500 });
   }
 }
