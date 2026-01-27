@@ -25,6 +25,7 @@ ingress:
     alb.ingress.kubernetes.io/target-group-attributes: deregistration_delay.timeout_seconds=30
     alb.ingress.kubernetes.io/target-type: "ip"
     alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:707930574880:certificate/5b25b145-75db-4837-b9f3-7f238ba8a9c7,arn:aws:acm:us-east-1:707930574880:certificate/bfdf509c-f44b-400f-b9e1-6f7a861abe91"
+    alb.ingress.kubernetes.io/actions.redirect-old-version: '{"Type":"redirect","RedirectConfig":{"Host":"huggingface.co","Port":"443","Path":"/deepsite/""Protocol":"HTTPS","StatusCode":"HTTP_302"}}'
     kubernetes.io/ingress.class: "alb"
 
 networkPolicy:
