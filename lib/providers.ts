@@ -5,6 +5,16 @@ import ZaiLogo from "@/assets/zai.svg";
 import MiniMaxLogo from "@/assets/minimax.svg";
 
 export const MODELS = [
+
+  {
+    value: "moonshotai/Kimi-K2.5",
+    label: "Kimi K2 Instruct",
+    providers: ["together", "novita", "groq"],
+    logo: KimiLogo,
+    isNew: true,
+    isBestSeller: true,
+    companyName: "Kimi",
+  },
   {
     value: "deepseek-ai/DeepSeek-V3-0324",
     label: "DeepSeek V3 O324",
@@ -27,19 +37,10 @@ export const MODELS = [
     companyName: "Qwen",
   },
   {
-    value: "moonshotai/Kimi-K2-Instruct-0905",
-    label: "Kimi K2 Instruct",
-    providers: ["together", "novita", "groq"],
-    logo: KimiLogo,
-    companyName: "Kimi",
-  },
-  {
     value: "zai-org/GLM-4.7",
     label: "GLM-4.7",
     logo: ZaiLogo,
     companyName: "Z.ai",
-    isNew: true,
-    isBestSeller: true,
   },
   {
     value: "MiniMaxAI/MiniMax-M2.1",
@@ -49,12 +50,10 @@ export const MODELS = [
     top_k: 40,
     temperature: 1.0,
     top_p: 0.95,
-    isNew: true,
-    isBestSeller: true,
   },
 ];
 
-export const DEFAULT_MODEL = "MiniMaxAI/MiniMax-M2.1";
+export const DEFAULT_MODEL = "moonshotai/Kimi-K2.5";
 
 export const getProviders = async (model: string) => {
   const response = await fetch(
