@@ -2,7 +2,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Settings, Check, Plus } from "lucide-react";
+import { Settings, Check, Plus, Download } from "lucide-react";
 import { RiContrastFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
@@ -34,6 +34,7 @@ import ProIcon from "@/assets/pro.svg";
 import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/loading";
+import { toast } from "sonner";
 
 export const ProjectSettings = ({
   project,
@@ -47,7 +48,7 @@ export const ProjectSettings = ({
 
   const [open, setOpen] = useState(false);
   const [projectName, setProjectName] = useState(
-    project?.cardData?.title || "New DeepSite website"
+    project?.cardData?.title || "New DeepSite website",
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +78,7 @@ export const ProjectSettings = ({
               ...oldProject.cardData,
               title: projectName,
             },
-          })
+          }),
         );
       } else {
         setError("Could not rename the project. Please try again.");
@@ -87,6 +88,32 @@ export const ProjectSettings = ({
       setError(err.message || "An error occurred");
     }
     setIsLoading(false);
+  };
+
+  const handleDownload = async () => {
+    try {
+      toast.info("Preparing download...");
+      const response = await fetch(`/api/projects/${repoId}/download`, {
+        headers: {
+          Accept: "application/zip",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to download project");
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${session?.user?.username}-${repoId}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success("Download started!");
+    } catch (error) {
+      toast.error("Failed to download project");
+    }
   };
 
   return (
@@ -159,6 +186,10 @@ export const ProjectSettings = ({
                   <Settings className="size-3.5" />
                   Project settings
                 </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleDownload()}>
+                <Download className="size-3.5" />
+                Download project
               </DropdownMenuItem>
             </>
           )}
