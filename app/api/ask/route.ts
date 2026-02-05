@@ -90,7 +90,7 @@ export async function POST(request: Request) {
                       )}\n`
                     : ""
                 }`,
-              },
+              }
             ],
             stream: true,
             max_tokens: 16_000,

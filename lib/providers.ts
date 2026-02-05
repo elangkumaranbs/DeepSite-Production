@@ -30,11 +30,12 @@ export const MODELS = [
     companyName: "DeepSeek",
   },
   {
-    value: "Qwen/Qwen3-Coder-30B-A3B-Instruct",
-    label: "Qwen3 Coder 30B A3B Instruct",
+    value: "Qwen/Qwen3-Coder-Next",
+    label: "Qwen3 Coder Next",
     providers: ["novita", "hyperbolic"],
     logo: QwenLogo,
     companyName: "Qwen",
+    isNew: true,
   },
   {
     value: "zai-org/GLM-4.7",

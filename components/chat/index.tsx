@@ -201,26 +201,49 @@ export function AppEditorChat({
                     },
                     pre: ({ children }) => <>{children}</>,
                     p: ({ children }) => {
+                      const content = String(children);
                       if (
                         typeof children === "string" &&
-                        String(children).includes("file:/")
+                        (content.includes("file:/") || 
+                         content.match(/https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(?:\?[^\s]*)?/i))
                       ) {
-                        const parts = children.split(/(file:\/\S+)/g);
+                        const parts = content.split(/(file:\/\S+|https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp|ico)(?:\?[^\s]*)?)/gi);
                         return (
                           <p>
-                            {parts.map((part, index) =>
-                              part.startsWith("file:/") ? (
-                                <span
-                                  key={index}
-                                  className="inline-flex w-fit items-center justify-center gap-1 font-mono px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-400"
-                                >
-                                  {getFileIcon(part, "size-2.5")}
-                                  {part.replace("file:/", "")}
-                                </span>
-                              ) : (
-                                part
-                              )
-                            )}
+                            {parts.filter(Boolean).map((part, index) => {
+                              if (!part || part.trim() === "") return null;
+                              
+                              if (part.startsWith("file:/")) {
+                                return (
+                                  <span
+                                    key={index}
+                                    className="inline-flex w-fit items-center justify-center gap-1 font-mono px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-400"
+                                  >
+                                    {getFileIcon(part, "size-2.5")}
+                                    {part.replace("file:/", "")}
+                                  </span>
+                                );
+                              } else if (
+                                part.match(
+                                  /^https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp|ico)(?:\?[^\s]*)?$/i
+                                )
+                              ) {
+                                const displayUrl =
+                                  part.length > 35
+                                    ? part.substring(0, 35) + "..."
+                                    : part;
+                                return (
+                                  <span
+                                    key={index}
+                                    className="inline-flex w-fit items-center justify-center gap-1 font-mono px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400"
+                                  >
+                                    <span className="text-[10px]">🖼️</span>
+                                    {displayUrl}
+                                  </span>
+                                );
+                              }
+                              return part;
+                            })}
                           </p>
                         );
                       }

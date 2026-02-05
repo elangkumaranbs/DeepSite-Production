@@ -13,6 +13,8 @@ export function InputMentions({
   setPrompt,
   redesignMdUrl,
   onSubmit,
+  imageLinks,
+  setImageLinks,
 }: {
   ref: RefObject<HTMLDivElement | null>;
   prompt: string;
@@ -20,6 +22,8 @@ export function InputMentions({
   redesignMdUrl?: string;
   setPrompt: (prompt: string) => void;
   onSubmit: () => void;
+  imageLinks?: string[];
+  setImageLinks?: (links: string[]) => void;
 }) {
   const queryClient = useQueryClient();
   const [showMentionDropdown, setShowMentionDropdown] = useState(false);
@@ -30,6 +34,12 @@ export function InputMentions({
   useClickAway(dropdownRef, () => {
     setShowMentionDropdown(false);
   });
+
+  const isImageUrl = (url: string): boolean => {
+    // Check if it's a valid HTTP/HTTPS URL with an image extension
+    const imageUrlPattern = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?.*)?$/i;
+    return imageUrlPattern.test(url);
+  };
 
   const getTextContent = (element: HTMLElement): string => {
     let text = "";
@@ -43,6 +53,10 @@ export function InputMentions({
         const el = node as HTMLElement;
         if (el.classList.contains("mention-chip")) {
           text += el.getAttribute("data-mention-id") || "";
+        } else if (el.classList.contains("image-chip")) {
+          // Include image URL in text content for display purposes
+          const imageUrl = el.getAttribute("data-image-url") || "";
+          text += imageUrl ? ` ${imageUrl} ` : "";
         } else {
           text += el.textContent || "";
         }
@@ -65,12 +79,35 @@ export function InputMentions({
         const el = node as HTMLElement;
         if (el.classList.contains("mention-chip")) {
           text += el.getAttribute("data-mention-id") || "";
+        } else if (el.classList.contains("image-chip")) {
+          // Include image URL in prompt text
+          const imageUrl = el.getAttribute("data-image-url") || "";
+          text += imageUrl ? ` ${imageUrl} ` : "";
         } else {
           text += el.textContent || "";
         }
       }
     }
     return text;
+  };
+
+  const extractImageLinks = (): string[] => {
+    if (!ref.current) return [];
+
+    const links: string[] = [];
+    const childNodes = ref.current.childNodes;
+
+    for (let i = 0; i < childNodes.length; i++) {
+      const node = childNodes[i];
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = node as HTMLElement;
+        if (el.classList.contains("image-chip")) {
+          const imageUrl = el.getAttribute("data-image-url");
+          if (imageUrl) links.push(imageUrl);
+        }
+      }
+    }
+    return links;
   };
 
   const shouldDetectMention = (): {
@@ -116,10 +153,22 @@ export function InputMentions({
   const handleInput = async () => {
     if (!ref.current) return;
     const text = getTextContent(ref.current);
-    if (text.trim() === "") {
+    
+    // Only clear if there's no content at all (including chips)
+    const hasImageChips = ref.current.querySelectorAll(".image-chip").length > 0;
+    const hasMentionChips = ref.current.querySelectorAll(".mention-chip").length > 0;
+    
+    if (text.trim() === "" && !hasImageChips && !hasMentionChips) {
       ref.current.innerHTML = "";
     }
+    
     setPrompt(text);
+
+    // Update image links whenever input changes
+    if (setImageLinks) {
+      const links = extractImageLinks();
+      setImageLinks(links);
+    }
 
     const { detect, textBeforeCursor } = shouldDetectMention();
 
@@ -137,17 +186,37 @@ export function InputMentions({
   const createMentionChipElement = (mentionId: string): HTMLSpanElement => {
     const mentionChip = document.createElement("span");
 
-    const baseClasses =
-      "mention-chip inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium";
-    const typeClasses =
-      "bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-400";
-
-    mentionChip.className = `${baseClasses} ${typeClasses}`;
+    mentionChip.className =
+      "mention-chip inline-flex w-fit items-center justify-center gap-1 font-mono px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-400";
     mentionChip.contentEditable = "false";
     mentionChip.setAttribute("data-mention-id", `file:/${mentionId}`);
     mentionChip.textContent = `@${mentionId}`;
 
     return mentionChip;
+  };
+
+  const createImageChipElement = (imageUrl: string): HTMLSpanElement => {
+    const imageChip = document.createElement("span");
+
+    imageChip.className =
+      "image-chip inline-flex w-fit items-center justify-center gap-1 font-mono px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400";
+    imageChip.contentEditable = "false";
+    imageChip.setAttribute("data-image-url", imageUrl);
+
+    // Create icon (using emoji for simplicity)
+    const icon = document.createElement("span");
+    icon.textContent = "🖼️";
+    icon.className = "text-[10px]";
+
+    // Truncate URL for display
+    const displayUrl =
+      imageUrl.length > 30 ? imageUrl.substring(0, 30) + "..." : imageUrl;
+    const text = document.createTextNode(displayUrl);
+
+    imageChip.appendChild(icon);
+    imageChip.appendChild(text);
+
+    return imageChip;
   };
 
   const insertMention = (mentionId: string) => {
@@ -216,6 +285,12 @@ export function InputMentions({
       e.preventDefault();
       const promptWithIds = extractPromptWithIds();
       setPrompt(promptWithIds);
+      
+      if (setImageLinks) {
+        const links = extractImageLinks();
+        setImageLinks(links);
+      }
+      
       onSubmit();
 
       if (ref.current) {
@@ -237,7 +312,92 @@ export function InputMentions({
   const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     e.preventDefault();
     const text = e.clipboardData.getData("text/plain");
-    document.execCommand("insertText", false, text);
+    
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || !ref.current) {
+      document.execCommand("insertText", false, text);
+      return;
+    }
+
+    const trimmedText = text.trim();
+    
+    // Check if pasted text is ONLY an image URL
+    if (isImageUrl(trimmedText)) {
+      const range = selection.getRangeAt(0);
+      const imageChip = createImageChipElement(trimmedText);
+      const spaceNode = document.createTextNode("\u0020");
+
+      range.deleteContents();
+      range.insertNode(imageChip);
+      
+      // Insert space after the chip
+      const afterChipRange = document.createRange();
+      afterChipRange.setStartAfter(imageChip);
+      afterChipRange.insertNode(spaceNode);
+
+      // Move cursor after the space
+      const newRange = document.createRange();
+      newRange.setStartAfter(spaceNode);
+      newRange.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(newRange);
+
+      // Update state
+      const newText = getTextContent(ref.current);
+      setPrompt(newText);
+      
+      if (setImageLinks) {
+        const links = extractImageLinks();
+        setImageLinks(links);
+      }
+    } else {
+      // Check if text contains image URLs
+      const imageUrlPattern = /https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?[^\s]*)?/gi;
+      const containsImageUrl = imageUrlPattern.test(text);
+      
+      if (containsImageUrl) {
+        // Split text and replace image URLs with chips
+        const parts = text.split(/(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?[^\s]*)?)/gi);
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        
+        const fragment = document.createDocumentFragment();
+        
+        parts.forEach((part) => {
+          if (isImageUrl(part)) {
+            const imageChip = createImageChipElement(part);
+            const spaceNode = document.createTextNode("\u0020");
+            fragment.appendChild(imageChip);
+            fragment.appendChild(spaceNode);
+          } else if (part && !part.match(/^\?[^\s]*$/)) {
+            // Skip query string matches, add other text
+            const textNode = document.createTextNode(part);
+            fragment.appendChild(textNode);
+          }
+        });
+        
+        range.insertNode(fragment);
+        
+        // Move cursor to end
+        const newRange = document.createRange();
+        newRange.selectNodeContents(ref.current);
+        newRange.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+        
+        // Update state
+        const newText = getTextContent(ref.current);
+        setPrompt(newText);
+        
+        if (setImageLinks) {
+          const links = extractImageLinks();
+          setImageLinks(links);
+        }
+      } else {
+        // Plain text, use default insertion
+        document.execCommand("insertText", false, text);
+      }
+    }
   };
 
   return (

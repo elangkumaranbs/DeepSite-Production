@@ -54,6 +54,7 @@ export function AskAI({
     url: string;
   } | null>(null);
   const [selectedMedias, setSelectedMedias] = useState<string[]>([]);
+  const [imageLinks, setImageLinks] = useState<string[]>([]);
   const [startTour, setStartTour] = useState<boolean>(false);
 
   const router = useRouter();
@@ -95,11 +96,12 @@ export function AskAI({
         onComplete,
         provider,
         redesignMd,
-        medias: selectedMedias ?? [],
+        medias: [...(selectedMedias ?? []), ...(imageLinks ?? [])],
       },
       setModel
     );
     if (selectedMedias.length > 0) setSelectedMedias([]);
+    if (imageLinks.length > 0) setImageLinks([]);
     if (redesignMd) setRedesignMd(null);
   };
 
@@ -118,6 +120,8 @@ export function AskAI({
         setPrompt={setPrompt}
         redesignMdUrl={redesignMd?.url?.replace(/(^\w+:|^)\/\//, "")}
         onSubmit={onSubmit}
+        imageLinks={imageLinks}
+        setImageLinks={setImageLinks}
       />
       <footer className="flex items-center justify-between mt-0">
         <div className="flex items-center gap-1.5">
