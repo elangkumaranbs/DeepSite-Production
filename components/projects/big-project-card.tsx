@@ -3,6 +3,7 @@ import { SpaceEntry } from "@huggingface/hub";
 import { format } from "date-fns";
 import {
   CogIcon,
+  Download,
   EllipsisVertical,
   ExternalLink,
   TrashIcon,
@@ -15,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 // from-red-500 to-red-500
 // from-yellow-500 to-yellow-500
@@ -32,6 +34,35 @@ export function BigProjectCard({
   project: SpaceEntry;
   onOpenDeleteDialog: (id: string) => void;
 }) {
+  const handleDownload = async () => {
+    try {
+      toast.info("Preparing download...");
+      const response = await fetch(
+        `/api/projects/${project.name.split("/")[1]}/download`,
+        {
+          headers: {
+            Accept: "application/zip",
+          },
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Failed to download project");
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${project.name.replaceAll("/", "-")}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success("Download started!");
+    } catch (error) {
+      toast.error("Failed to download project");
+    }
+  };
+
   return (
     <a href={`/${project.name}`} className="">
       <div className="group/big-card rounded-lg overflow-hidden transition-all border-2 border-background ring-[1px] ring-border relative">
@@ -47,7 +78,7 @@ export function BigProjectCard({
             <iframe
               src={`https://${project.name.replaceAll(
                 "/",
-                "-"
+                "-",
               )}.static.hf.space`}
               className="w-[700px] h-[350px] border-0 origin-top-left pointer-events-none"
               style={{
@@ -84,12 +115,22 @@ export function BigProjectCard({
                 e.stopPropagation();
                 window.open(
                   `https://huggingface.co/spaces/${project.name}/settings`,
-                  "_blank"
+                  "_blank",
                 );
               }}
             >
               <CogIcon />
               Settings
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                handleDownload();
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              <Download />
+              Download
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
