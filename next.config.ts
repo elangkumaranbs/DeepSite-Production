@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "huggingface.co",
       },
+      {
+        protocol: "https",
+        hostname: "i.imgur.com",
+      }
     ],
   },
   headers: async () => [
