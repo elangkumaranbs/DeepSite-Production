@@ -41,7 +41,7 @@ export const getProjects = async () => {
     accessToken: token,
     additionalFields: ["author", "cardData"],
     search: {
-      owner: "enzostvs",
+      owner: session.user.username, 
     },
   })) {
     if (
