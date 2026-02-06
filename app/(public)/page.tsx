@@ -4,6 +4,8 @@ import { UserProjects } from "@/components/projects/user-projects";
 import { AskAiLanding } from "@/components/ask-ai/ask-ai-landing";
 import { Bento } from "@/components/public/bento";
 
+export const dynamic = "force-dynamic";
+
 export default async function Homepage() {
   return (
     <>
