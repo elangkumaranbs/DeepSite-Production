@@ -20,7 +20,8 @@ import { Button } from "@/components/ui/button";
 import { getFileIcon } from "@/components/ask-ai/input-mentions";
 import ProIcon from "@/assets/pro.svg";
 import { ProModal } from "../pro-modal";
-import AssistantAvatar from "@/assets/assistant.jpg";
+
+const ASSISTANT_AVATAR_URL = "https://i.imgur.com/Ho6v0or.jpeg";
 
 export function AppEditorChat({
   isNew,
@@ -109,7 +110,7 @@ export function AppEditorChat({
                 src={
                   message.role === "user"
                     ? session?.user?.image ?? ""
-                    : AssistantAvatar.src
+                    : ASSISTANT_AVATAR_URL
                 }
                 alt="DeepSite"
                 className="size-4"

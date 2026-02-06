@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 .idea
+
+# binary assets (hosted on CDN)
+assets/assistant.jpg
+.gitattributes
