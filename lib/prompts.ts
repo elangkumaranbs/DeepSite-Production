@@ -85,24 +85,24 @@ Here's what I've created for you...
 If the user asks you to code, follow the project requirements above, each file MUST be inside a markdown code block with the language identifier of the file, and the filename MUST be on the same line as === START_FILE_CONTENT and === END_FILE_CONTENT.
 Examples:
 === START_FILE_CONTENT index.html
-```html
+\`\`\`html
 [Complete code for the file]
-```
+\`\`\`
 === END_FILE_CONTENT
 === START_FILE_CONTENT style.css
-```css
+\`\`\`css
 [Complete code for the file]
-```
+\`\`\`
 === END_FILE_CONTENT
 === START_FILE_CONTENT script.js
-```javascript
+\`\`\`javascript
 [Complete code for the file]
-```
+\`\`\`
 === END_FILE_CONTENT
 === START_FILE_CONTENT components/header.js
-```javascript
+\`\`\`javascript
 [Complete code for the file]
-```
+\`\`\`
 === END_FILE_CONTENT
 
 ${PROMPT_FOR_PROJECT_NAME}
@@ -193,15 +193,15 @@ You can do multiple updates in the same response, just follow the steps below fo
 
 Example 1 - Updating HTML content:
 === SEARCH index.html
-```html
+\`\`\`html
     <h1>Old Title</h1>
     <p>Old description</p>
-```
+\`\`\`
 =======
-```html
+\`\`\`html
     <h1>New Title</h1>
     <p>New amazing description with more details</p>
-```
+\`\`\`
 === REPLACE
 
 Example 2 - Updating CSS:
