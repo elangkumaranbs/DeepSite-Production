@@ -36,7 +36,7 @@ yarn-error.log*
 .env.*.local
 
 # local project drafts
-projects/
+/projects/
 
 # vercel
 .vercel

@@ -16,6 +16,7 @@ export const useProject = (
     if (isNew) {
       queryClient.setQueryData(["project"], null);
       queryClient.setQueryData(["files"], []);
+      queryClient.setQueryData(["messages", "new"], []);
     } else if (initialProject) {
       queryClient.setQueryData(["project"], initialProject);
       if (initialFiles) {

@@ -44,6 +44,7 @@ export function UserProjects() {
     });
     if (response?.success) {
       toast.success("Project has been deleted");
+      localStorage.removeItem(`messages-${deleteProjectId}`);
       refetch();
       setOpen(false);
       setDeleteProjectId(null);
