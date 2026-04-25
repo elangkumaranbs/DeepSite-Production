@@ -122,7 +122,7 @@ export const formatResponse = (message: string, currentFiles: File[]) => {
   const modifiedFiles = new Map<string, File>();
 
   // Extract message content (everything outside special markers)
-  const messageContent = extractMessageContent(message);
+  let messageContent = extractMessageContent(message);
 
   // Extract project title
   let projectTitle =
@@ -323,9 +323,81 @@ export const formatResponse = (message: string, currentFiles: File[]) => {
   }
 
   // Convert modified files map to array
-  const files = Array.from(modifiedFiles.values())?.filter(
+  let files = Array.from(modifiedFiles.values())?.filter(
     (file) => file.path !== "README.md"
   );
+
+  // FALLBACK PARSER
+  // If no files were found using the strict markers, attempt to extract standard markdown blocks.
+  // This is a safety net for smaller offline models that might ignore the system prompt.
+  if (files.length === 0 && !message.includes(START_FILE_CONTENT) && !message.includes(SEARCH_START)) {
+    const blockRegex = /```(html|css|javascript|js|ts|tsx|jsx)\n([\s\S]*?)(?:```|$)/g;
+    let match;
+    let extractedAny = false;
+
+    while ((match = blockRegex.exec(message)) !== null) {
+      extractedAny = true;
+      const lang = match[1].toLowerCase();
+      let rawContent = match[2];
+
+      // Clean up partial closing backticks for streaming
+      for (let i = 1; i < 3; i++) {
+        const partialClosing = "`".repeat(i);
+        if (rawContent.endsWith(partialClosing)) {
+          rawContent = rawContent.substring(0, rawContent.length - i);
+          break;
+        }
+      }
+      const content = rawContent.trim();
+      if (!content) continue;
+
+      let filename = "";
+      
+      // Look for a filename hint in the first line (e.g. <!-- index.html --> or /* style.css */)
+      const firstLine = content.split('\n')[0].trim();
+      if (firstLine.startsWith('<!--') && firstLine.endsWith('-->')) {
+        const hint = firstLine.replace('<!--', '').replace('-->', '').trim();
+        if (hint.includes('.')) filename = hint;
+      } else if (firstLine.startsWith('//') || firstLine.startsWith('/*')) {
+        const hint = firstLine.replace('//', '').replace('/*', '').replace('*/', '').trim();
+        if (hint.includes('.')) filename = hint;
+      }
+
+      // Default filename based on language
+      if (!filename) {
+        if (lang === "html") filename = "index.html";
+        else if (lang === "css") filename = "style.css";
+        else if (lang === "javascript" || lang === "js") filename = "script.js";
+        else filename = `file.${lang}`;
+      }
+
+      // Validate filename
+      const validated = validateFilename(filename);
+      filename = validated || `file.${lang}`;
+
+      // Prevent overwriting if multiple blocks of same language exist without hints
+      let finalFilename = filename;
+      let counter = 1;
+      while (modifiedFiles.has(finalFilename)) {
+        const parts = filename.split('.');
+        finalFilename = `${parts[0]}${counter}.${parts[1]}`;
+        counter++;
+      }
+
+      modifiedFiles.set(finalFilename, { path: finalFilename, content });
+    }
+
+    if (extractedAny) {
+      // Re-evaluate files array
+      files = Array.from(modifiedFiles.values())?.filter(
+        (file) => file.path !== "README.md"
+      );
+      
+      // Remove raw blocks from messageContent so they don't clutter the UI
+      const rawBlockRemoveRegex = /```(?:html|css|javascript|js|ts|tsx|jsx)\n[\s\S]*?(?:```|$)/g;
+      messageContent = messageContent.replace(rawBlockRemoveRegex, "").trim();
+    }
+  }
 
   return {
     messageContent,
