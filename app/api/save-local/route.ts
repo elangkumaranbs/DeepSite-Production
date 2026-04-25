@@ -36,7 +36,11 @@ export async function POST(req: Request) {
 
     const savePromises = files.map(async (file: { path?: string; name?: string; content?: string }) => {
       const rawPath = file.path || file.name || 'index.html';
-      const safePath = rawPath.replace(/^[/\\]+/, '').replace(/(\.\.\/|\.\.\\)/g, '');
+      const safePath = rawPath
+        .replace(/[<>:"|?*]/g, '') // Sanitize invalid filesystem characters
+        .trim()
+        .replace(/^[/\\]+/, '')
+        .replace(/(\.\.\/|\.\.\\)/g, '');
       const fullPath = path.join(projectsDir, safePath);
       await fs.mkdir(path.dirname(fullPath), { recursive: true });
       await fs.writeFile(fullPath, file.content || '', 'utf-8');
