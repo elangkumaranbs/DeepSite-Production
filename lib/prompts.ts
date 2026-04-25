@@ -60,14 +60,17 @@ If the user asks you something without details, you must imagine the best possib
 
 ${PROMPT_FOR_IMAGE_GENERATION}
 
-=== OUTPUT FORMAT ===
 🚨 CRITICAL: YOU MUST ALWAYS FOLLOW THIS EXACT FORMAT FOR EVERY RESPONSE. NO EXCEPTIONS.
+🚨 DO NOT WRAP THESE MARKERS IN HTML COMMENTS like <!-- === START_FILE_CONTENT -->.
+🚨 DO NOT REMOVE THE UNDERSCORES.
+🚨 DO NOT REMOVE THE THREE EQUALS SIGNS (===).
+🚨 IF YOU FAIL TO USE THE EXACT LITERAL STRING "=== START_FILE_CONTENT", THE PROJECT WILL BREAK.
 
 ## RESPONSE FORMAT FOR EVERY RESPONSE
 You can write your human-readable response anywhere in your message. Markdown allowed, Emoji allowed to make it more engaging. This is your explanation or answer to the user.
 
 **IMPORTANT RULES:**
-1. ✅ ANY text that is NOT inside special markers (${START_FILE_CONTENT}, ${START_PROJECT_NAME}, ${SEARCH_START}) will be shown to the user as your message
+1. ✅ ANY text that is NOT inside special markers (=== START_FILE_CONTENT, === START_PROJECT_NAME, === SEARCH) will be shown to the user as your message
 2. ✅ You can write text before, between, or after code blocks - it will all be combined as your message
 3. ✅ Use markdown formatting to make your responses clear and engaging
 
@@ -79,28 +82,28 @@ I'll help you create that! 🚀
 Here's what I've created for you...
 
 ## RESPONSE FORMAT FOR CODE CREATION
-If the user asks you to code, follow the project requirements above, each file MUST be inside a markdown code block with the language identifier of the file, and the filename MUST be on the same line as ${START_FILE_CONTENT} and ${END_FILE_CONTENT}.
+If the user asks you to code, follow the project requirements above, each file MUST be inside a markdown code block with the language identifier of the file, and the filename MUST be on the same line as === START_FILE_CONTENT and === END_FILE_CONTENT.
 Examples:
-${START_FILE_CONTENT} index.html
-\`\`\`html
+=== START_FILE_CONTENT index.html
+```html
 [Complete code for the file]
-\`\`\`
-${END_FILE_CONTENT}
-${START_FILE_CONTENT} style.css
-\`\`\`css
+```
+=== END_FILE_CONTENT
+=== START_FILE_CONTENT style.css
+```css
 [Complete code for the file]
-\`\`\`
-${END_FILE_CONTENT}
-${START_FILE_CONTENT} script.js
-\`\`\`javascript
+```
+=== END_FILE_CONTENT
+=== START_FILE_CONTENT script.js
+```javascript
 [Complete code for the file]
-\`\`\`
-${END_FILE_CONTENT}
-${START_FILE_CONTENT} components/header.js
-\`\`\`javascript
+```
+=== END_FILE_CONTENT
+=== START_FILE_CONTENT components/header.js
+```javascript
 [Complete code for the file]
-\`\`\`
-${END_FILE_CONTENT}
+```
+=== END_FILE_CONTENT
 
 ${PROMPT_FOR_PROJECT_NAME}
 `;
@@ -149,12 +152,14 @@ ${PROMPT_FOR_IMAGE_GENERATION}
 
 === OUTPUT FORMAT ===
 🚨 CRITICAL: YOU MUST ALWAYS FOLLOW THIS EXACT FORMAT FOR EVERY RESPONSE. NO EXCEPTIONS.
+🚨 DO NOT WRAP THESE MARKERS IN HTML COMMENTS like <!-- === SEARCH -->.
+🚨 DO NOT REMOVE THE UNDERSCORES OR EQUALS SIGNS.
 
 ## RESPONSE FORMAT FOR EVERY RESPONSE
 You can write your human-readable response anywhere in your message. Markdown allowed, Emoji allowed to make it more engaging. This is your explanation or answer to the user.
 
 **IMPORTANT RULES:**
-1. ✅ ANY text that is NOT inside special markers (${START_FILE_CONTENT}, ${SEARCH_START}) will be shown to the user as your message
+1. ✅ ANY text that is NOT inside special markers (=== START_FILE_CONTENT, === SEARCH) will be shown to the user as your message
 2. ✅ You can write text before, between, or after code blocks - it will all be combined as your message
 3. ✅ Use markdown formatting to make your responses clear and engaging
 
@@ -172,35 +177,32 @@ When the user asks you to update existing code, you MUST use the SEARCH/REPLACE 
 You can do multiple updates in the same response, just follow the steps below for each update:
 
 **SEARCH/REPLACE FORMAT:**
-1. Start with ${SEARCH_START}
+1. Start with === SEARCH
 2. Add a space and provide the filename of the file to update (e.g., index.html, style.css, script.js, about.html, etc.)
 3. Inside a markdown code block (with appropriate language: html, css, javascript), provide the EXACT lines from the current code that need to be replaced
-4. Use ${DIVIDER} to separate the search block from the replacement
+4. Use ======= to separate the search block from the replacement
 5. Inside a markdown code block (with same language), provide the new lines that should replace the original lines
-6. End with ${REPLACE_END}
+6. End with === REPLACE
 
 **IMPORTANT SEARCH/REPLACE RULES:**
 - You can use multiple SEARCH/REPLACE blocks if changes are needed in different parts of the same file or in different files
 - The SEARCH block must *exactly* match the current code, including indentation, whitespace, and line breaks
 - Choose enough context in your SEARCH block to make it unique within the file
-- To insert code at the beginning, use an empty SEARCH block (only ${SEARCH_START} filename, empty code block, ${DIVIDER}, then your code, ${REPLACE_END})
-- To insert code in the middle, include the line *before* the insertion point in SEARCH, then include that same line plus the new lines in REPLACE
-- To delete code, provide the lines to delete in SEARCH and leave REPLACE empty (empty code block between ${DIVIDER} and ${REPLACE_END})
 
 **EXAMPLES:**
 
 Example 1 - Updating HTML content:
-${SEARCH_START} index.html
-\`\`\`html
+=== SEARCH index.html
+```html
     <h1>Old Title</h1>
     <p>Old description</p>
-\`\`\`
-${DIVIDER}
-\`\`\`html
+```
+=======
+```html
     <h1>New Title</h1>
     <p>New amazing description with more details</p>
-\`\`\`
-${REPLACE_END}
+```
+=== REPLACE
 
 Example 2 - Updating CSS:
 ${SEARCH_START} style.css
