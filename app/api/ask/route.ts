@@ -72,10 +72,12 @@ export async function POST(request: Request) {
             model: ollamaModelId,
             messages: [
               { role: "system", content: ollamaSystemPrompt },
-              ...previousMessages.map((message: Message) => ({
-                role: message.role,
-                content: message.content,
-              })),
+              ...previousMessages
+                .filter((m: Message) => m.content && m.content.trim() !== "")
+                .map((message: Message) => ({
+                  role: message.role,
+                  content: message.content,
+                })),
               ...(files?.length > 0
                 ? [{
                     role: "user",
