@@ -97,9 +97,9 @@ export async function POST(request: Request) {
           const errText = await ollamaRes.text();
           let userFriendlyError = errText;
           if (errText.includes("model") && errText.includes("not found")) {
-            userFriendlyError = \`Ollama model '\${ollamaModelId}' is not installed. Please open your terminal and run: ollama pull \${ollamaModelId}\`;
+            userFriendlyError = `Ollama model '${ollamaModelId}' is not installed. Please open your terminal and run: ollama pull ${ollamaModelId}`;
           }
-          await writer.write(encoder.encode(\`\n\n__ERROR__:\${JSON.stringify({ messageError: userFriendlyError, isError: true })}\`));
+          await writer.write(encoder.encode(`\n\n__ERROR__:${JSON.stringify({ messageError: userFriendlyError, isError: true })}`));
           await writer.close();
           return;
         }
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          const lines = decoder.decode(value).split("\\n").filter(Boolean);
+          const lines = decoder.decode(value).split("\n").filter(Boolean);
           for (const line of lines) {
             if (line.startsWith("data: ") && line !== "data: [DONE]") {
               try {
@@ -128,7 +128,7 @@ export async function POST(request: Request) {
           userFriendlyError = "Failed to connect to Ollama. Please ensure the Ollama app is running on your machine.";
         }
         try {
-          await writer.write(encoder.encode(\`\n\n__ERROR__:\${JSON.stringify({ messageError: userFriendlyError, isError: true })}\`));
+          await writer.write(encoder.encode(`\n\n__ERROR__:${JSON.stringify({ messageError: userFriendlyError, isError: true })}`));
           await writer.close();
         } catch { /* ignore */ }
       }
