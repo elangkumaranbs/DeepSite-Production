@@ -331,7 +331,7 @@ export const formatResponse = (message: string, currentFiles: File[]) => {
   // If no files were found using the strict markers, attempt to extract standard markdown blocks.
   // This is a safety net for smaller offline models that might ignore the system prompt.
   if (files.length === 0 && !message.includes(START_FILE_CONTENT) && !message.includes(SEARCH_START)) {
-    const blockRegex = /```(html|css|javascript|js|ts|tsx|jsx)\n([\s\S]*?)(?:```|$)/g;
+    const blockRegex = /```(html|css|javascript|js|ts|tsx|jsx)\s*\r?\n([\s\S]*?)(?:```|$)/gi;
     let match;
     let extractedAny = false;
 
@@ -394,7 +394,7 @@ export const formatResponse = (message: string, currentFiles: File[]) => {
       );
       
       // Remove raw blocks from messageContent so they don't clutter the UI
-      const rawBlockRemoveRegex = /```(?:html|css|javascript|js|ts|tsx|jsx)\n[\s\S]*?(?:```|$)/g;
+      const rawBlockRemoveRegex = /```(?:html|css|javascript|js|ts|tsx|jsx)\s*\r?\n[\s\S]*?(?:```|$)/gi;
       messageContent = messageContent.replace(rawBlockRemoveRegex, "").trim();
     }
   }
