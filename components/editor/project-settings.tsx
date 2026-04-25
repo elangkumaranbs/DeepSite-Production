@@ -6,7 +6,15 @@ import { Settings, Check, Plus, Download } from "lucide-react";
 import { RiContrastFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import { ChevronDown, ChevronLeft, Edit } from "lucide-react";
+import { ChevronDown, ChevronLeft, Edit, Palette } from "lucide-react";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import {
   DropdownMenu,
@@ -50,8 +58,18 @@ export const ProjectSettings = ({
   const [projectName, setProjectName] = useState(
     project?.cardData?.title || "New DeepSite website",
   );
+  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Brand Kit states
+  // @ts-ignore
+  const brandKit = project?.brandKit;
+  const [brandOpen, setBrandOpen] = useState(false);
+  const [primaryColor, setPrimaryColor] = useState(brandKit?.primaryColor || "#3b82f6");
+  const [fontFamily, setFontFamily] = useState(brandKit?.fontFamily || "Inter");
+  const [borderRadius, setBorderRadius] = useState(brandKit?.borderRadius || "md");
+  const [isBrandLoading, setIsBrandLoading] = useState(false);
 
   const handleRenameProject = async () => {
     setIsLoading(true);
@@ -88,6 +106,42 @@ export const ProjectSettings = ({
       setError(err.message || "An error occurred");
     }
     setIsLoading(false);
+  };
+
+  const handleSaveBrand = async () => {
+    setIsBrandLoading(true);
+    setError(null);
+    try {
+      const newBrandKit = { primaryColor, fontFamily, borderRadius };
+      const response = await fetch(`/api/projects/${repoId}/brand`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ brandKit: newBrandKit }),
+      }).then(async (response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      });
+      if (response?.success) {
+        setBrandOpen(false);
+        queryClient.setQueryData(
+          ["project"],
+          // @ts-ignore
+          (oldProject: any) => ({
+            ...oldProject,
+            brandKit: newBrandKit,
+          }),
+        );
+        toast.success("Brand settings saved!");
+      } else {
+        setError("Could not save brand settings.");
+      }
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
+    }
+    setIsBrandLoading(false);
   };
 
   const handleDownload = async () => {
@@ -144,8 +198,8 @@ export const ProjectSettings = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64" align="start">
-          <DropdownMenuItem>
-            <Link href="/" className="flex items-center gap-1.5">
+          <DropdownMenuItem asChild>
+            <Link href="/" className="flex items-center gap-1.5 w-full cursor-pointer">
               <ChevronLeft className="size-3.5" />
               Go to Projects
             </Link>
@@ -153,10 +207,10 @@ export const ProjectSettings = ({
           <DropdownMenuSeparator />
           {!session?.user?.isPro && (
             <>
-              <DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link
                   href="https://huggingface.co/pro"
-                  className="flex items-center gap-1.5 bg-linear-to-r from-pink-500 via-green-500 to-amber-500 text-transparent bg-clip-text font-semibold"
+                  className="flex items-center gap-1.5 w-full cursor-pointer bg-linear-to-r from-pink-500 via-green-500 to-amber-500 text-transparent bg-clip-text font-semibold"
                   target="_blank"
                 >
                   <Image alt="Pro" src={ProIcon} className="size-3.5" />
@@ -166,28 +220,33 @@ export const ProjectSettings = ({
               <DropdownMenuSeparator />
             </>
           )}
-          <DropdownMenuItem>
-            <Link href="/new" className="flex items-center gap-1.5">
+          <DropdownMenuItem asChild>
+            <Link href="/new" className="flex items-center gap-1.5 w-full cursor-pointer">
               <Plus className="size-3.5" />
               New Project
             </Link>
           </DropdownMenuItem>
           {project && (
             <>
-              <DropdownMenuItem onClick={() => setOpen(true)}>
+              <DropdownMenuItem onSelect={() => setOpen(true)} className="cursor-pointer">
                 <Edit className="size-3.5" />
                 Rename the project
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link
                   href={`https://huggingface.co/${owner}/${repoId}/settings`}
-                  className="flex items-center gap-1.5"
+                  className="flex items-center gap-1.5 w-full cursor-pointer"
+                  target="_blank"
                 >
                   <Settings className="size-3.5" />
                   Project settings
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleDownload()}>
+              <DropdownMenuItem onSelect={() => setBrandOpen(true)} className="cursor-pointer">
+                <Palette className="size-3.5" />
+                Brand Kit Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleDownload()} className="cursor-pointer">
                 <Download className="size-3.5" />
                 Download project
               </DropdownMenuItem>
@@ -265,6 +324,100 @@ export const ProjectSettings = ({
                 <>
                   <Edit className="size-4" />
                   Update Project name
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={brandOpen} onOpenChange={setBrandOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-3xl!">
+          <DialogHeader>
+            <DialogTitle>Brand Kit Settings</DialogTitle>
+            <DialogDescription>
+              Set global design rules that the AI will strictly follow.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div className="grid gap-3">
+              {error && <p className="text-sm text-red-500">{error}</p>}
+              
+              <div className="grid gap-1">
+                <label className="text-sm font-medium">Primary Color</label>
+                <div className="flex gap-2 items-center">
+                  <Input
+                    type="color"
+                    className="p-1 h-10 w-16"
+                    value={primaryColor}
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                  />
+                  <Input
+                    type="text"
+                    className="h-10 text-xs font-mono"
+                    value={primaryColor}
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-1">
+                <label className="text-sm font-medium">Font Family</label>
+                <Select value={fontFamily} onValueChange={setFontFamily}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a font" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Inter">Inter</SelectItem>
+                    <SelectItem value="Roboto">Roboto</SelectItem>
+                    <SelectItem value="Poppins">Poppins</SelectItem>
+                    <SelectItem value="Playfair Display">Playfair Display</SelectItem>
+                    <SelectItem value="Outfit">Outfit</SelectItem>
+                    <SelectItem value="Fira Code">Fira Code</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid gap-1">
+                <label className="text-sm font-medium">Global Border Radius</label>
+                <Select value={borderRadius} onValueChange={setBorderRadius}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select radius" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None (0px)</SelectItem>
+                    <SelectItem value="sm">Small</SelectItem>
+                    <SelectItem value="md">Medium</SelectItem>
+                    <SelectItem value="lg">Large</SelectItem>
+                    <SelectItem value="xl">Extra Large</SelectItem>
+                    <SelectItem value="full">Full (Pill)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button
+              variant="default"
+              onClick={() => handleSaveBrand()}
+              disabled={isBrandLoading}
+            >
+              {isBrandLoading ? (
+                <>
+                  <Loading
+                    overlay={false}
+                    className="ml-2 size-4 animate-spin text-primary-foreground"
+                  />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Palette className="size-4" />
+                  Save Brand Kit
                 </>
               )}
             </Button>

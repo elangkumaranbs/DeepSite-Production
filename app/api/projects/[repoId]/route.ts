@@ -2,6 +2,8 @@ import { auth } from "@/lib/auth";
 import { RepoDesignation, deleteRepo, uploadFiles } from "@huggingface/hub";
 import { format } from "date-fns";
 import { NextResponse } from "next/server";
+import dbConnect from "@/lib/mongodb";
+import Project from "@/lib/models/Project";
 
 export async function PUT(
   request: Request,
@@ -90,12 +92,35 @@ export async function DELETE(
   };
 
   try {
-    await deleteRepo({
-      repo,
-      accessToken: token as string,
-    });
+    // 1. Delete from local MongoDB (Offline Drafts)
+    let deletedFromMongo = false;
+    try {
+      await dbConnect();
+      const result = await Project.deleteOne({ owner: session.user.username, name: decodeURIComponent(repoId) });
+      if (result.deletedCount > 0) {
+        deletedFromMongo = true;
+      }
+    } catch (dbError) {
+      console.error("Failed to delete from MongoDB:", dbError);
+    }
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    // 2. Try deleting from Hugging Face (Deployed Spaces)
+    let deletedFromHF = false;
+    try {
+      await deleteRepo({
+        repo,
+        accessToken: token as string,
+      });
+      deletedFromHF = true;
+    } catch (hfError) {
+      console.error("Failed to delete from HF:", hfError);
+    }
+
+    if (deletedFromMongo || deletedFromHF) {
+      return NextResponse.json({ success: true }, { status: 200 });
+    } else {
+      return NextResponse.json({ error: "Project not found or could not be deleted" }, { status: 404 });
+    }
   } catch (error) {
     const errMsg =
       error instanceof Error ? error.message : "Failed to delete project";

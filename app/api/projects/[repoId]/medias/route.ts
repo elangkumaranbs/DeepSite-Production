@@ -38,6 +38,12 @@ export async function POST(
       const isImage = media.type.startsWith("image/");
       const isVideo = media.type.startsWith("video/");
       const isAudio = media.type.startsWith("audio/");
+      const isFont =
+        media.type.startsWith("font/") ||
+        media.name.endsWith(".ttf") ||
+        media.name.endsWith(".otf") ||
+        media.name.endsWith(".woff") ||
+        media.name.endsWith(".woff2");
 
       const folderPath = isImage
         ? "images/"
@@ -45,6 +51,8 @@ export async function POST(
         ? "videos/"
         : isAudio
         ? "audios/"
+        : isFont
+        ? "fonts/"
         : null;
 
       if (!folderPath) {

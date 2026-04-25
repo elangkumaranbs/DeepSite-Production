@@ -63,8 +63,7 @@ export const getMentionsFromPrompt = async (prompt: string) => {
         }
       }
       const readme = await fetch(
-        `https://huggingface.co/${
-          type === "model" ? "" : "datasets/"
+        `https://huggingface.co/${type === "model" ? "" : "datasets/"
         }${mention}/raw/main/README.md`
       );
       const readmeContent = await readme.text();
@@ -104,7 +103,7 @@ export const defaultHTML = `<!DOCTYPE html>
     <title>My app</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
   <body class="flex justify-center items-center h-screen overflow-hidden bg-white dark:bg-neutral-950 font-sans text-center px-6">
     <div class="w-full">

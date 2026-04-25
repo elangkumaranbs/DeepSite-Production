@@ -1,7 +1,7 @@
 "use client";
 import { ArrowUp, Paintbrush, X } from "lucide-react";
 import { FaHand } from "react-icons/fa6";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { HiStop } from "react-icons/hi2";
 import { useLocalStorage, useMount, useUpdateEffect } from "react-use";
 import { useRouter } from "next/navigation";
@@ -39,10 +39,22 @@ export function AskAI({
   projectName?: string;
 }) {
   const contentEditableRef = useRef<HTMLDivElement | null>(null);
-  const [model = DEFAULT_MODEL, setModel] = useLocalStorage<string>(
+  const [storedModel, setModel] = useLocalStorage<string>(
     "deepsite-model",
     DEFAULT_MODEL
   );
+
+  // Compute effective model — if stored value is no longer in MODELS, fall back to default
+  const isStoredModelValid = !!MODELS.find((m) => m.value === storedModel);
+  const model = isStoredModelValid ? (storedModel ?? DEFAULT_MODEL) : DEFAULT_MODEL;
+
+  // Reset stale localStorage value AFTER render (never during render — that causes crashes)
+  useEffect(() => {
+    if (!isStoredModelValid) {
+      setModel(DEFAULT_MODEL);
+    }
+  }, [isStoredModelValid]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const [provider, setProvider] = useLocalStorage<ProviderType>(
     "deepsite-provider",
     "auto" as ProviderType

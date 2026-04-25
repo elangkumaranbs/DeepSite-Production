@@ -42,7 +42,7 @@ If the user asks you something without details, you must imagine the best possib
 === PROJECT REQUIREMENTS ===
 - Always create at least a \`index.html\` file, this is the main file that will be used to display the project.
 - Do not create a \`README.md\` or any other markdown file, it will be automatically created by the API.
-- Use Tailwind CSS for styling, include it in the code by adding \`<script src="https://cdn.tailwindcss.com"></script>\` in the \`<head>\` tag.
+- Use Tailwind CSS for styling, include it in the code by adding \`<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>\` in the \`<head>\` tag.
 - Use any library you need to use, just add it to the \`<head>\` tag or \`<body>\` tag, depending on the library.
 - For Icons, use the latest version of Lucide Icons, here is a demo on how to include it and use it:
 \`\`\`html
@@ -127,7 +127,7 @@ If the user asks you something without details, you must imagine the best possib
 
 === PROJECT REQUIREMENTS ===
 - Do not create a \`README.md\` or any other markdown file, it will be automatically created by the API.
-- Use Tailwind CSS for styling, include it in the code by adding \`<script src="https://cdn.tailwindcss.com"></script>\` in the \`<head>\` tag.
+- Use Tailwind CSS for styling, include it in the code by adding \`<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>\` in the \`<head>\` tag.
 - Use any library you need to use, just add it to the \`<head>\` tag or \`<body>\` tag, depending on the library.
 - For Icons, use the latest version of Lucide Icons, here is a demo on how to include it and use it:
 \`\`\`html
@@ -286,12 +286,12 @@ ${START_FILE_CONTENT} about.html
 \`\`\`html
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>x
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
     <nav class="bg-gray-800 text-white p-4">

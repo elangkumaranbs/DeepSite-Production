@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { formatResponse } from "@/lib/format";
 import { File, Message, MessageActionType, ProviderType } from "@/lib/type";
 import { getContextFilesFromPrompt } from "@/lib/utils";
+import { saveDraft } from "@/actions/drafts";
 
 const MESSAGES_QUERY_KEY = (projectName: string) =>
   ["messages", projectName] as const;
@@ -234,16 +235,42 @@ export const useGeneration = (projectName: string) => {
     const isFollowUp = files?.length > 0;
     abortController.current = new AbortController();
 
+    let visionStructuralMd = "";
+    const imageMedias = medias?.filter(m => m.startsWith('data:image/') || m.match(/\.(jpg|jpeg|png|gif|webp|bmp)$/i)) || [];
+    
+    if (imageMedias.length > 0 && !filesToUse?.length) {
+      try {
+        const visionRes = await fetch("/api/vision", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ images: imageMedias }),
+        });
+        if (visionRes.ok) {
+          const vData = await visionRes.json();
+          if (vData.success && vData.structure) {
+            visionStructuralMd = `\n\nHere is the exact structural HTML skeleton extracted from the user's provided design/screenshot using a vision model. Focus purely on writing the backend logic and styling this precisely as given. Do not invent a different layout.\n\n--- Vision Extracted Layout ---\n${vData.structure}\n--- End Extracted Layout ---\n`;
+          }
+        }
+      } catch (err) {
+        console.error("Vision processing failed", err);
+      }
+    }
+
+    const finalPrompt = prompt + visionStructuralMd;
+    const projectInfo = queryClient.getQueryData<any>(["project"]);
+    const brandKit = projectInfo?.brandKit;
+
     const request = await fetch("/api/ask", {
       method: "POST",
       body: JSON.stringify({
-        prompt,
+        prompt: finalPrompt,
         model,
         files: filesToUse,
         previousMessages,
         provider,
         redesignMd,
         medias,
+        brandKit,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -288,6 +315,72 @@ export const useGeneration = (projectName: string) => {
           if (newFiles && newFiles.length > 0) {
             setFiles(newFiles);
             onComplete();
+
+            // ── Background Security Review ─────────────────────────────────
+            // Fire-and-forget: silently scan generated files for XSS, unclosed
+            // tags, missing meta, unsafe links, etc. If issues are found the
+            // model returns corrected files which are patched in automatically.
+            (async () => {
+              try {
+                const reviewRes = await fetch("/api/review", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ files: newFiles }),
+                });
+                if (!reviewRes.ok) return;
+                const reviewData = await reviewRes.json();
+                if (reviewData.skipped) return;
+                const { files: patchedFiles, issueCount } = reviewData;
+                if (patchedFiles && patchedFiles.length > 0) {
+                  setFiles(patchedFiles);
+                  toast.success(
+                    `🔍 Security scan: ${issueCount > 0 ? `${issueCount} issue${issueCount > 1 ? "s" : ""} auto-fixed` : `${patchedFiles.length} file${patchedFiles.length > 1 ? "s" : ""} improved`}`,
+                    { duration: 4000 }
+                  );
+                }
+              } catch {
+                // Never surface review errors to the user
+              }
+            })();
+            // ─────────────────────────────────────────────────────────────────
+
+            // Automatically save the final generated files to local MongoDB as a draft
+            saveDraft({
+              name: projectTitle || projectName || 'Generated-Website',
+              files: newFiles
+                .filter((f): f is { path: string; content: string } => f.content !== undefined),
+              prompt: prompt,
+            }).then(res => {
+              if (res.success) {
+                console.log("Draft saved to MongoDB");
+              } else {
+                console.error("Failed to save draft to MongoDB:", res.error);
+              }
+            });
+
+            // Automatically save the final generated files locally to the deepsite/projects folder
+            fetch('/api/save-local', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                projectTitle: projectTitle || projectName || 'Generated-Website',
+                files: newFiles
+              })
+            })
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  toast.success(`Project saved locally! 📁`);
+                  console.log(`Auto-save → ${data.path}`);
+                } else {
+                  toast.error(`Local save failed: ${data.error}`);
+                }
+              })
+              .catch(err => {
+                toast.error('Local save error — check console');
+                console.error('Auto-save failed:', err);
+              });
+
             if (projectName === "new") {
               addMessage({
                 role: "assistant",

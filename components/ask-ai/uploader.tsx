@@ -36,8 +36,27 @@ export const Uploader = ({
 
   const [open, setOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      uploadFiles(e.dataTransfer.files);
+    }
+  };
 
   const getFileIcon = (url: string) => {
     const fileType = getFileType(url);
@@ -133,7 +152,17 @@ export const Uploader = ({
               Upload files to include them in the AI context.
             </p>
           </header>
-          <main className="space-y-4 px-6 pb-6">
+          <main 
+            className="space-y-4 px-6 pb-6 relative min-h-[150px]"
+            onDragOver={handleDragOver} 
+            onDragLeave={handleDragLeave} 
+            onDrop={handleDrop}
+          >
+            {isDragging && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-indigo-500/90 rounded-b-2xl border-2 border-dashed border-white m-0">
+                <p className="text-white text-lg font-semibold animate-pulse tracking-wide">Drop files here to upload!</p>
+              </div>
+            )}
             {error && <p className="text-sm text-red-500">{error}</p>}
             {medias && medias.length > 0 && (
               <div>
@@ -221,7 +250,7 @@ export const Uploader = ({
                 type="file"
                 className="hidden"
                 multiple
-                accept="image/*,video/*,audio/*,.mp3,.mp4,.wav,.aac,.m4a,.ogg,.webm,.avi,.mov"
+                accept="image/*,video/*,audio/*,.mp3,.mp4,.wav,.aac,.m4a,.ogg,.webm,.avi,.mov,.svg,.woff2,.woff,.ttf,.otf"
                 onChange={(e) => uploadFiles(e.target.files)}
               />
             </div>

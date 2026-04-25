@@ -2,7 +2,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { VariantProps } from "class-variance-authority";
 import { LucideIcon } from "lucide-react";
 
-export type DeviceType = "desktop" | "mobile";
+export type DeviceType = "desktop" | "tablet" | "ios" | "android";
 export type ActivityType = "chat" | "code";
 export type MobileTabType = "left-sidebar" | "right-sidebar";
 export type ProviderType = "auto" | "cheapest" | "fastest" | string;

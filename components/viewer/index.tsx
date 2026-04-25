@@ -43,9 +43,13 @@ export function AppViewer({
           <SandpackPreview
             className={cn(
               "rounded-xl! z-1 transition-all duration-300 flex-none! border-none!",
-              device === "mobile"
-                ? "w-[470px]! h-[78dvh]! shadow-2xl! rounded-4xl!"
-                : "w-full! h-full! scale-100"
+              device === "desktop"
+                ? "w-full! h-full! scale-100"
+                : device === "tablet"
+                ? "w-[768px]! h-[1024px]! max-h-[85dvh]! max-w-[85vw]! shadow-2xl! rounded-md!"
+                : device === "ios"
+                ? "w-[390px]! h-[844px]! max-h-[80dvh]! shadow-2xl! rounded-[3rem]! border-[12px]! border-gray-900!"
+                : "w-[412px]! h-[915px]! max-h-[82dvh]! shadow-2xl! rounded-[2rem]! border-8! border-gray-800!" // android
             )}
             showOpenInCodeSandbox={false}
             showRefreshButton={false}

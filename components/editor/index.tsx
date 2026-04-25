@@ -1,10 +1,11 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { useBeforeUnload, useLocalStorage } from "react-use";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
 import { amethyst } from "@codesandbox/sandpack-themes";
+import { useSandpack } from "@codesandbox/sandpack-react";
 import { NextStep } from "nextstepjs";
 import confetti from "canvas-confetti";
 
@@ -28,6 +29,44 @@ const SandpackProvider = dynamic(
   { ssr: false }
 );
 
+/**
+ * Inner component — must live INSIDE SandpackProvider.
+ * 1. Calls updateFile() on every streaming chunk so preview shows partial progress.
+ * 2. Forces a full iframe refresh when generation finishes so external scripts
+ *    (like Tailwind CDN) properly re-execute. updateFile() alone only hot-patches
+ *    the file content but does NOT re-run <script> tags in static HTML.
+ */
+function SandpackFileSync({ files }: { files: File[] }) {
+  const { sandpack } = useSandpack();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!files || files.length === 0) return;
+
+    // 1. Push updates into Sandpack internal state
+    files.forEach((file) => {
+      const path = file.path.startsWith("/") ? file.path : `/${file.path}`;
+      sandpack.updateFile(path, file.content ?? "");
+    });
+
+    // 2. Debounce the iframe refresh — fires 300ms after the LAST chunk arrives.
+    //    This makes the preview update live during streaming without constant flickering.
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      sandpack.runSandpack();
+    }, 300);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
+
+  return null;
+}
+
+
+
 export function AppEditor({
   project: initialProject,
   files: initialFiles,
@@ -49,7 +88,9 @@ export function AppEditor({
   const projectName = isNew ? "new" : project?.name ?? "new";
 
   const toggleDevice = () => {
-    setDevice((prev) => (prev === "desktop" ? "mobile" : "desktop"));
+    const devices: DeviceType[] = ["desktop", "tablet", "ios", "android"];
+    const currentIndex = devices.indexOf(device);
+    setDevice(devices[(currentIndex + 1) % devices.length]);
   };
   const [tourHasBeenShown, setTourHasBeenShown] = useLocalStorage<boolean>(
     "tour-has-been-shown",
@@ -64,10 +105,16 @@ export function AppEditor({
   const sandpackFiles = useMemo(() => {
     if (files && files.length > 0) {
       return files.reduce(
-        (acc, file) => ({
-          ...acc,
-          [file.path]: { code: file.content ?? "" },
-        }),
+        (acc, file) => {
+          // Normalize path: always add leading slash so Sandpack matches its entry file /index.html
+          const normalizedPath = file.path.startsWith("/")
+            ? file.path
+            : `/${file.path}`;
+          return {
+            ...acc,
+            [normalizedPath]: { code: file.content ?? "" },
+          };
+        },
         {}
       );
     } else {
@@ -99,14 +146,16 @@ export function AppEditor({
         template="static"
         options={{
           initMode: "immediate",
-          autoReload: false,
-          recompileDelay: 3000,
+          autoReload: true,
+          recompileDelay: 300,
           recompileMode: "immediate",
         }}
         files={sandpackFiles}
         theme={resolvedTheme === "dark" ? amethyst : undefined}
         className="h-screen! w-full! flex! flex-col! justify-between! lg:overflow-hidden!"
       >
+        {/* Syncs live file changes into Sandpack preview after every update */}
+        <SandpackFileSync files={files ?? []} />
         <AppEditorHeader
           currentActivity={currentActivity}
           onToggleActivity={setCurrentActivity}

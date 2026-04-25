@@ -1,54 +1,51 @@
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth/next";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    {
-      id: "huggingface",
-      name: "Hugging Face",
-      type: "oauth",
-      clientId: process.env.AUTH_HUGGINGFACE_ID,
-      clientSecret: process.env.AUTH_HUGGINGFACE_SECRET,
-      wellKnown: "https://huggingface.co/.well-known/openid-configuration",
-      authorization: {
-        url: "https://huggingface.co/oauth/authorize",
-        params: {
-          scope: "openid profile read-repos manage-repos inference-api",
-        },
+    CredentialsProvider({
+      name: "Hugging Face Access Token",
+      credentials: {
+        token: { label: "Hugging Face Access Token", type: "text", placeholder: "hf_..." }
       },
-      userinfo: {
-        url: "https://huggingface.co/oauth/userinfo",
-        async request(context) {
-          const { tokens } = context;
-          const response = await fetch("https://huggingface.co/oauth/userinfo", {
-            headers: {
-              Authorization: `Bearer ${tokens.access_token}`,
-            },
+      async authorize(credentials) {
+        if (!credentials?.token) return null;
+        
+        try {
+          const response = await fetch("https://huggingface.co/api/whoami-v2", {
+            headers: { Authorization: `Bearer ${credentials.token}` }
           });
-          const data = await response.json();
-          return data;
+          
+          if (!response.ok) return null;
+          
+          const profile = await response.json();
+          
+          return {
+            id: profile.id || profile.name,
+            name: profile.fullname || profile.name,
+            username: profile.name,
+            image: profile.avatarUrl,
+            isPro: profile.isPro,
+            access_token: credentials.token
+          };
+        } catch (e) {
+          return null;
         }
-      },
-      checks: ["state"],
-      async profile(profile) {
-        return {
-          id: profile.sub,
-          name: profile.name || profile.preferred_username,
-          username: profile.preferred_username,
-          image: profile.picture,
-          isPro: profile.isPro
-        };
-      },
-    },
+      }
+    })
   ],
   callbacks: {
-    async jwt({ token, account, user }) {
+    async jwt({ token, account, user }: { token: any, account?: any, user?: any }) {
       if (account) {
         token.accessToken = account.access_token;
       }
       if (user) {
         token.username = user.username;
         token.isPro = user.isPro;
+        if (user.access_token) {
+          token.accessToken = user.access_token;
+        }
       }
       return token;
     },

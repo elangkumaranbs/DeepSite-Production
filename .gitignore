@@ -32,6 +32,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env
+.env.local
+.env.*.local
+
+# local project drafts
+projects/
 
 # vercel
 .vercel
@@ -41,7 +46,17 @@ yarn-error.log*
 next-env.d.ts
 
 .idea
+.vscode/
+
+# local artifacts
+*.md
+!README.md
+!walkthrough.md
+!implementation_plan.md
+!task.md
 
 # binary assets (hosted on CDN)
 assets/assistant.jpg
 .gitattributes
+index.html
+start.bat

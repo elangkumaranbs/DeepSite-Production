@@ -6,9 +6,12 @@ import {
   RefreshCw,
   Monitor,
   Smartphone,
+  Tablet,
   Code,
   MessageCircle,
   ExternalLink,
+  Download,
+  Rocket,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -21,6 +24,7 @@ import { useProject } from "@/components/projects/useProject";
 import { cn } from "@/lib/utils";
 import { Commits } from "./commits";
 import { ProjectSettings } from "./project-settings";
+import { DeployDialog } from "./deploy-dialog";
 
 export function AppEditorHeader({
   currentActivity,
@@ -43,6 +47,37 @@ export function AppEditorHeader({
   const { refresh } = useSandpackNavigation();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [deployOpen, setDeployOpen] = useState(false);
+
+  const handleDownloadZip = async () => {
+    if (!files || files.length === 0) return;
+    setIsDownloading(true);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+
+      files.forEach((file) => {
+        const filePath = file.path.startsWith("/") ? file.path.substring(1) : file.path;
+        zip.file(filePath, file.content || "");
+      });
+
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = window.URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      const projectName = project?.name?.split("/").pop() ?? "deepsite-project";
+      a.download = `${projectName}-${Date.now()}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Failed to generate zip", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -57,7 +92,8 @@ export function AppEditorHeader({
   };
 
   return (
-    <header className="px-3 lg:px-2 py-1.5 flex items-center gap-3">
+    <>
+      <header className="px-3 lg:px-2 py-1.5 flex items-center gap-3">
       <div
         className={cn(
           "w-1/3 flex items-center gap-1.5 justify-between",
@@ -93,19 +129,35 @@ export function AppEditorHeader({
                 variant="bordered"
                 size="xs"
                 onClick={onToggleDevice}
-                className="gap-2"
+                className="gap-2 w-28 flex items-center justify-center"
               >
-                {device === "desktop" ? (
-                  <>
-                    <Monitor className="size-3.5" />
-                    Desktop
-                  </>
-                ) : (
-                  <>
-                    <Smartphone className="size-3.5" />
-                    Mobile
-                  </>
-                )}
+                {device === "desktop" && <><Monitor className="size-3.5" /> Desktop</>}
+                {device === "tablet" && <><Tablet className="size-3.5" /> Tablet</>}
+                {device === "ios" && <><Smartphone className="size-3.5" /> iOS</>}
+                {device === "android" && <><Smartphone className="size-3.5" /> Android</>}
+              </Button>
+            </>
+          )}
+          {files && files.length > 0 && (
+            <>
+              <Button
+                variant="bordered"
+                size="xs"
+                onClick={handleDownloadZip}
+                disabled={isDownloading}
+                className="gap-1.5 px-2!"
+              >
+                <Download className={cn("size-3.5 shrink-0", isDownloading && "animate-pulse")} />
+              </Button>
+              <Button
+                variant="bordered"
+                size="xs"
+                onClick={() => setDeployOpen(true)}
+                className="gap-1.5 px-2.5!"
+                title="Deploy to Netlify or Vercel"
+              >
+                <Rocket className="size-3.5 shrink-0" />
+                Deploy
               </Button>
             </>
           )}
@@ -189,5 +241,6 @@ export function AppEditorHeader({
         </div>
       </div>
     </header>
-  );
+    <DeployDialog open={deployOpen} onOpenChange={setDeployOpen} />
+  </>);
 }

@@ -11,6 +11,8 @@ import {
 
 import { auth } from "@/lib/auth";
 import { Commit, File } from "@/lib/type";
+import dbConnect from "@/lib/mongodb";
+import Project from "@/lib/models/Project";
 
 export interface ProjectWithCommits extends SpaceEntry {
   commits?: Commit[];
@@ -37,31 +39,116 @@ export const getProjects = async () => {
     return projects;
   }
   const token = session.accessToken;
-  for await (const space of listSpaces({
-    accessToken: token,
-    additionalFields: ["author", "cardData"],
-    search: {
-      owner: session.user.username, 
-    },
-  })) {
-    if (
-      space.sdk === "static" &&
-      Array.isArray((space.cardData as { tags?: string[] })?.tags) &&
-      (space.cardData as { tags?: string[] })?.tags?.some((tag) =>
-        tag.includes("deepsite")
-      )
-    ) {
-      projects.push(space);
+
+  // 1. Fetch from MongoDB (Offline Drafts)
+  try {
+    await dbConnect();
+    const localProjects = await Project.find({ owner: session.user.username })
+      .sort({ lastModified: -1 })
+      .lean();
+
+    for (const lp of localProjects) {
+      projects.push({
+        id: `${session.user.username}/${lp.name}`,
+        name: `${session.user.username}/${lp.name}`,
+        author: session.user.username,
+        lastModified: lp.lastModified,
+        updatedAt: lp.lastModified,
+        private: true,
+        sdk: "static",
+        likes: 0,
+        cardData: {
+          title: lp.name,
+          emoji: lp.brandKit?.primaryColor ? "🎨" : "📝",
+          tags: ["deepsite"],
+        },
+      } as unknown as SpaceEntry);
     }
+  } catch (error) {
+    console.error("Failed to fetch local projects:", error);
   }
+
+  // 2. Fetch from Hugging Face (Deployed Spaces)
+  try {
+    for await (const space of listSpaces({
+      accessToken: token,
+      additionalFields: ["author", "cardData"],
+      search: {
+        owner: session.user.username,
+      },
+    })) {
+      if (
+        space.sdk === "static" &&
+        Array.isArray((space.cardData as { tags?: string[] })?.tags) &&
+        (space.cardData as { tags?: string[] })?.tags?.some((tag) =>
+          tag.includes("deepsite")
+        )
+      ) {
+        // Only push if not already loaded from MongoDB to avoid duplicates
+        const exists = projects.find((p) => p.name === space.name);
+        if (!exists) {
+          projects.push(space);
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Failed to fetch HF projects:", error);
+  }
+
   return projects;
 };
+
 export const getProject = async (id: string, commitId?: string) => {
   const session = await auth();
   if (!session?.user) {
     return null;
   }
   const token = session.accessToken;
+
+  // 1. Check MongoDB first (Offline Drafts)
+  try {
+    await dbConnect();
+    const owner = decodeURIComponent(id.split("/")[0]);
+    const repoName = decodeURIComponent(id.split("/").slice(1).join("/"));
+
+    const localProject = await Project.findOne({ owner, name: repoName }).lean();
+    if (localProject) {
+      const project: ProjectWithCommits = {
+        id: id,
+        name: id,
+        author: owner,
+        lastModified: localProject.lastModified,
+        updatedAt: localProject.lastModified,
+        private: true,
+        sdk: "static",
+        likes: 0,
+        commits: [],
+        medias: [],
+        cardData: {
+          title: localProject.name,
+          emoji: localProject.brandKit?.primaryColor ? "🎨" : "📝",
+        },
+      } as unknown as ProjectWithCommits;
+
+      const files: File[] = (localProject.files || []).map((f: any) => ({
+        path: f.path,
+        content: f.content,
+      }));
+
+      // Sort index.html to the top
+      const sortedFiles = files.sort((a, b) => {
+        if (a.path === "index.html") return -1;
+        if (b.path === "index.html") return 1;
+        return a.path.localeCompare(b.path);
+      });
+
+      return { project, files: sortedFiles };
+    }
+  } catch (error) {
+    console.error("Failed to fetch local project:", error);
+  }
+
+  // 2. Fall back to Hugging Face
   try {
     const project: ProjectWithCommits | null = await spaceInfo({
       name: id,

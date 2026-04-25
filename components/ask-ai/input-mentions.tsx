@@ -30,6 +30,7 @@ export function InputMentions({
   const [, setMentionSearch] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [results, setResults] = useState<File[]>([]);
+  const blobMapRef = useRef<Record<string, string>>({});
 
   useClickAway(dropdownRef, () => {
     setShowMentionDropdown(false);
@@ -103,7 +104,9 @@ export function InputMentions({
         const el = node as HTMLElement;
         if (el.classList.contains("image-chip")) {
           const imageUrl = el.getAttribute("data-image-url");
-          if (imageUrl) links.push(imageUrl);
+          if (imageUrl) {
+            links.push(blobMapRef.current[imageUrl] || imageUrl);
+          }
         }
       }
     }
@@ -153,15 +156,15 @@ export function InputMentions({
   const handleInput = async () => {
     if (!ref.current) return;
     const text = getTextContent(ref.current);
-    
+
     // Only clear if there's no content at all (including chips)
     const hasImageChips = ref.current.querySelectorAll(".image-chip").length > 0;
     const hasMentionChips = ref.current.querySelectorAll(".mention-chip").length > 0;
-    
+
     if (text.trim() === "" && !hasImageChips && !hasMentionChips) {
       ref.current.innerHTML = "";
     }
-    
+
     setPrompt(text);
 
     // Update image links whenever input changes
@@ -210,8 +213,8 @@ export function InputMentions({
 
     // Truncate URL for display
     const displayUrl =
-      imageUrl.length > 30 ? imageUrl.substring(0, 30) + "..." : imageUrl;
-    const text = document.createTextNode(displayUrl);
+      imageUrl.length > 30 && !imageUrl.startsWith("blob:") ? imageUrl.substring(0, 30) + "..." : "Screenshot";
+    const text = document.createTextNode(" " + displayUrl);
 
     imageChip.appendChild(icon);
     imageChip.appendChild(text);
@@ -285,12 +288,12 @@ export function InputMentions({
       e.preventDefault();
       const promptWithIds = extractPromptWithIds();
       setPrompt(promptWithIds);
-      
+
       if (setImageLinks) {
         const links = extractImageLinks();
         setImageLinks(links);
       }
-      
+
       onSubmit();
 
       if (ref.current) {
@@ -310,9 +313,50 @@ export function InputMentions({
   }, [prompt]);
 
   const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
-    e.preventDefault();
+    if (e.clipboardData.files && e.clipboardData.files.length > 0) {
+      e.preventDefault();
+      const file = Array.from(e.clipboardData.files).find((f) => f.type.startsWith("image/"));
+      if (file) {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0 || !ref.current) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const base64 = event.target?.result as string;
+          const blobUrl = URL.createObjectURL(file);
+          blobMapRef.current[blobUrl] = base64;
+
+          const range = selection.getRangeAt(0);
+          const imageChip = createImageChipElement(blobUrl);
+
+          range.deleteContents();
+          range.insertNode(imageChip);
+
+          const spaceNode = document.createTextNode("\u0020");
+          const afterChipRange = document.createRange();
+          afterChipRange.setStartAfter(imageChip);
+          afterChipRange.insertNode(spaceNode);
+
+          const newRange = document.createRange();
+          newRange.setStartAfter(spaceNode);
+          newRange.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(newRange);
+
+          const newText = getTextContent(ref.current!);
+          setPrompt(newText);
+
+          if (setImageLinks) {
+            setImageLinks(extractImageLinks());
+          }
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
+    }
+
     const text = e.clipboardData.getData("text/plain");
-    
+
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0 || !ref.current) {
       document.execCommand("insertText", false, text);
@@ -320,7 +364,7 @@ export function InputMentions({
     }
 
     const trimmedText = text.trim();
-    
+
     // Check if pasted text is ONLY an image URL
     if (isImageUrl(trimmedText)) {
       const range = selection.getRangeAt(0);
@@ -329,7 +373,7 @@ export function InputMentions({
 
       range.deleteContents();
       range.insertNode(imageChip);
-      
+
       // Insert space after the chip
       const afterChipRange = document.createRange();
       afterChipRange.setStartAfter(imageChip);
@@ -345,7 +389,7 @@ export function InputMentions({
       // Update state
       const newText = getTextContent(ref.current);
       setPrompt(newText);
-      
+
       if (setImageLinks) {
         const links = extractImageLinks();
         setImageLinks(links);
@@ -354,15 +398,15 @@ export function InputMentions({
       // Check if text contains image URLs
       const imageUrlPattern = /https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?[^\s]*)?/gi;
       const containsImageUrl = imageUrlPattern.test(text);
-      
+
       if (containsImageUrl) {
         // Split text and replace image URLs with chips
         const parts = text.split(/(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?[^\s]*)?)/gi);
         const range = selection.getRangeAt(0);
         range.deleteContents();
-        
+
         const fragment = document.createDocumentFragment();
-        
+
         parts.forEach((part) => {
           if (isImageUrl(part)) {
             const imageChip = createImageChipElement(part);
@@ -375,20 +419,20 @@ export function InputMentions({
             fragment.appendChild(textNode);
           }
         });
-        
+
         range.insertNode(fragment);
-        
+
         // Move cursor to end
         const newRange = document.createRange();
         newRange.selectNodeContents(ref.current);
         newRange.collapse(false);
         selection.removeAllRanges();
         selection.addRange(newRange);
-        
+
         // Update state
         const newText = getTextContent(ref.current);
         setPrompt(newText);
-        
+
         if (setImageLinks) {
           const links = extractImageLinks();
           setImageLinks(links);
@@ -410,12 +454,12 @@ export function InputMentions({
         data-placeholder={
           redesignMdUrl
             ? `I'll redesign ${redesignMdUrl.replace(
-                /[<>"']/g,
-                ""
-              )}, want to add something?`
+              /[<>"']/g,
+              ""
+            )}, want to add something?`
             : files && files.length > 0
-            ? "Ask me anything. Type @ to mention a file..."
-            : "Ask me anything..."
+              ? "Ask me anything. Type @ to mention a file..."
+              : "Ask me anything..."
         }
         onInput={handleInput}
         onKeyDown={handleKeyDown}

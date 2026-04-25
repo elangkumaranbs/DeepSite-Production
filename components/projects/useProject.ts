@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 import { getProject, ProjectWithCommits } from "@/actions/projects";
+import { getDraft } from "@/actions/drafts";
 import { File } from "@/lib/type";
 
 export const useProject = (
@@ -32,6 +33,14 @@ export const useProject = (
     initialData: initialProject,
     queryFn: async () => {
       if (isNew) return null;
+      
+      // Try to load any local draft from MongoDB first
+      const draft = await getDraft(initialProject?.name as string);
+      if (draft && draft.files) {
+        setFiles(draft.files);
+        return draft;
+      }
+
       const datas = await getProject(initialProject?.name as string);
       if (datas?.files) {
         setFiles(datas.files);
