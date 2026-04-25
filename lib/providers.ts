@@ -84,15 +84,7 @@ export const MODELS = [
   // --- Ollama Models (Local offline models) ---
   {
     value: "ollama:qwen2.5-coder:7b",
-    label: "Qwen 2.5 7B (Offline)",
-    logo: OllamaLogo,
-    companyName: "Ollama",
-    apiProvider: "ollama",
-    isNew: true,
-  },
-  {
-    value: "ollama:qwen2.5-coder:14b",
-    label: "Qwen 2.5 14B (Offline)",
+    label: "Qwen 2.5 7B (Fast Offline)",
     logo: OllamaLogo,
     companyName: "Ollama",
     apiProvider: "ollama",
