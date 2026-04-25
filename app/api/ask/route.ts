@@ -58,8 +58,21 @@ export async function POST(request: Request) {
 =======================\n\n`
       : "";
 
-    const baseSysPrompt = files.length > 0 ? FOLLOW_UP_SYSTEM_PROMPT : INITIAL_SYSTEM_PROMPT;
+    const baseSysPrompt = files.length > 0 ? GROQ_FOLLOW_UP_SYSTEM_PROMPT : GROQ_INITIAL_SYSTEM_PROMPT;
     const ollamaSystemPrompt = baseSysPrompt + brandKitPrompt;
+
+    let finalUserPrompt = prompt;
+    if (redesignMd?.url) {
+      finalUserPrompt = `Redesign the following website ${redesignMd.url}, try to use the same images and content, but you can still improve it if needed. Do the best version possibile. Here is the markdown:\n ${redesignMd.md} \n\n${finalUserPrompt}`;
+    }
+    if (medias && medias.length > 0) {
+      finalUserPrompt = `${finalUserPrompt} \nHere is the list of my media files: ${medias.join(", ")}\n`;
+    }
+    if (files?.length > 0) {
+      finalUserPrompt = `Here are the files the user has provided:\n${files
+        .map((file: File) => `File: ${file.path}\nContent: ${file.content}`)
+        .join("\n")}\n\n${finalUserPrompt}`;
+    }
 
     (async () => {
       try {
@@ -78,17 +91,9 @@ export async function POST(request: Request) {
                   role: message.role,
                   content: message.content,
                 })),
-              ...(files?.length > 0
-                ? [{
-                    role: "user",
-                    content: `Here are the files that the user has provider:${files
-                      .map((file: File) => `File: ${file.path}\nContent: ${file.content}`)
-                      .join("\n")}\n\n${prompt}`,
-                  }]
-                : []),
               {
                 role: "user",
-                content: `${redesignMd?.url ? `Redesign the following website ${redesignMd.url}, try to use the same images and content, but you can still improve it if needed. Do the best version possibile. Here is the markdown:\n ${redesignMd.md} \n\n` : ""}${prompt} ${medias && medias.length > 0 ? `\nHere is the list of my media files: ${medias.join(", ")}\n` : ""}`,
+                content: finalUserPrompt,
               },
             ],
             stream: true,
